@@ -1,5 +1,5 @@
 /**
- * Hello Market — database seed script.
+ * MartWeb — database seed script.
  *
  * Populates a freshly migrated database with realistic demo data so the
  * storefront and admin panel are never empty: categories, brands, products
@@ -20,7 +20,7 @@ async function hash(password: string) {
 }
 
 async function main() {
-  console.log("🌱 Seeding Hello Market...");
+  console.log("🌱 Seeding MartWeb...");
 
   // -------------------------------------------------------------------
   // Admin users (RBAC — one per role)
@@ -193,12 +193,12 @@ async function main() {
   // CMS Pages
   // -------------------------------------------------------------------
   const pageDefs = [
-    { slug: "sobre", title: "Sobre nós", content: "<p>A Hello Market nasceu para simplificar a forma como você compra online: catálogo selecionado, entrega rápida e um atendimento que resolve de verdade.</p><p>Somos uma equipe apaixonada por tecnologia e experiência do cliente, sempre buscando o melhor custo-benefício para você.</p>" },
+    { slug: "sobre", title: "Sobre nós", content: "<p>A MartWeb nasceu para simplificar a forma como você compra online: catálogo selecionado, entrega rápida e um atendimento que resolve de verdade.</p><p>Somos uma equipe apaixonada por tecnologia e experiência do cliente, sempre buscando o melhor custo-benefício para você.</p>" },
     { slug: "contato", title: "Contato", content: "<p>Fale com a gente pelo e-mail <strong>contato@hellomarket.com.br</strong> ou pelo WhatsApp (11) 90000-0000.</p><p>Horário de atendimento: segunda a sexta, das 9h às 18h.</p>" },
     { slug: "trocas", title: "Trocas e devoluções", content: "<h2>Como funciona</h2><p>Você tem até 7 dias corridos após o recebimento para solicitar a troca ou devolução, conforme o Código de Defesa do Consumidor.</p><ul><li>Acesse Meus Pedidos e solicite o cancelamento ou troca</li><li>Nossa equipe entrará em contato para os próximos passos</li><li>O reembolso é processado após a confirmação do produto</li></ul>" },
     { slug: "entregas", title: "Entregas", content: "<p>Trabalhamos com múltiplas transportadoras para garantir o melhor prazo e custo de entrega para sua região.</p><p>O prazo estimado é calculado no carrinho a partir do seu CEP, e frete grátis é aplicado automaticamente acima do valor mínimo vigente.</p>" },
     { slug: "faq", title: "Perguntas frequentes", content: "<h2>Formas de pagamento</h2><p>Aceitamos PIX, boleto e cartão de crédito em até 12x.</p><h2>Como acompanho meu pedido?</h2><p>Acesse Meus Pedidos na sua conta para ver o status e o código de rastreamento.</p>" },
-    { slug: "termos", title: "Termos de uso", content: "<p>Ao utilizar o site da Hello Market, você concorda com nossos termos de uso, que regulam o cadastro, as compras e a utilização da plataforma.</p><p>Reservamo-nos o direito de atualizar estes termos periodicamente.</p>" },
+    { slug: "termos", title: "Termos de uso", content: "<p>Ao utilizar o site da MartWeb, você concorda com nossos termos de uso, que regulam o cadastro, as compras e a utilização da plataforma.</p><p>Reservamo-nos o direito de atualizar estes termos periodicamente.</p>" },
     { slug: "privacidade", title: "Política de privacidade", content: "<p>Respeitamos sua privacidade e tratamos seus dados pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p><p>Você pode solicitar a exportação ou exclusão dos seus dados a qualquer momento pela sua conta.</p>" },
   ];
   for (const p of pageDefs) {
@@ -211,7 +211,8 @@ async function main() {
   // -------------------------------------------------------------------
   await prisma.setting.createMany({
     data: [
-      { key: "store.name", value: "Hello Market", group: "store" },
+      { key: "store.name", value: "MartWeb", group: "store" },
+      { key: "store.logoUrl", value: "/logo-martweb.png", group: "store" },
       { key: "store.email", value: "contato@hellomarket.com.br", group: "store" },
       { key: "store.phone", value: "(11) 4000-0000", group: "store" },
       { key: "store.whatsapp", value: "(11) 90000-0000", group: "store" },

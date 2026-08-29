@@ -18,15 +18,15 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Hello Market — Sua loja online completa",
-    template: "%s | Hello Market",
+    default: "MartWeb — Sua loja online completa",
+    template: "%s | MartWeb",
   },
   description:
-    "Hello Market: milhares de produtos com os melhores preços, entrega rápida e pagamento seguro.",
+    "MartWeb: milhares de produtos com os melhores preços, entrega rápida e pagamento seguro.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    siteName: "Hello Market",
+    siteName: "MartWeb",
   },
   robots: { index: true, follow: true },
 };

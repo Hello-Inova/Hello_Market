@@ -72,7 +72,7 @@ function mockShippingOptions(input: ShippingQuoteInput): ShippingOption[] {
       name: "Retirar em loja",
       price: 0,
       days: 1,
-      carrier: "Loja Hello Market",
+      carrier: "Loja MartWeb",
     },
   ];
 }

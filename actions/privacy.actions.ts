@@ -28,7 +28,7 @@ export async function requestAccountDeletionAction() {
     data: {
       active: false,
       deletedAt: new Date(),
-      email: `deleted-${user.id}@anonymized.hellomarket.local`,
+      email: `deleted-${user.id}@anonymized.martweb.local`,
       firstName: "Usuário",
       lastName: "Removido",
       fullName: "Usuário Removido",

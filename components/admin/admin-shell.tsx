@@ -56,7 +56,9 @@ export function AdminShell({
   const SidebarContent = (
     <>
       <div className="flex items-center gap-2 px-4 py-5">
-        <span className="text-lg font-bold text-white">Hello Market</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-icon.png" alt="MartWeb" className="h-7 w-7" />
+        <span className="text-lg font-bold text-white">MartWeb</span>
         <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400">ADMIN</span>
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-4">
@@ -111,7 +113,7 @@ export function AdminShell({
           <button onClick={() => setMobileOpen(true)} aria-label="Abrir menu">
             <Menu className="h-5 w-5" />
           </button>
-          <span className="font-bold">Hello Market Admin</span>
+          <span className="font-bold">MartWeb Admin</span>
         </header>
         <main className="flex-1 p-4 md:p-8">{children}</main>
       </div>

@@ -1,4 +1,4 @@
-# Hello Market
+# MartWeb
 
 Sistema de e-commerce completo e pronto para produção: catálogo, carrinho, checkout com validação 100% server-side, pagamentos, frete, cupons, avaliações, área do cliente, painel administrativo com RBAC, auditoria, LGPD e SEO.
 

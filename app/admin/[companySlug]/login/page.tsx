@@ -10,8 +10,10 @@ export default async function AdminLoginPage({
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">
       <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-icon.png" alt="MartWeb" className="mb-4 h-10 w-10" />
         <h1 className="mb-1 text-xl font-bold">Painel Administrativo</h1>
-        <p className="mb-6 text-sm text-zinc-400">Hello Market</p>
+        <p className="mb-6 text-sm text-zinc-400">MartWeb</p>
         <AdminLoginForm companySlug={companySlug} />
         <p className="mt-4 text-xs text-zinc-500">
           Acesso restrito à equipe administrativa. Demo: admin@hellomarket.com.br / Admin@123

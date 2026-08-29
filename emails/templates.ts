@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/lib/utils";
 
-const STORE_NAME = "Hello Market";
+const STORE_NAME = "MartWeb";
 const BRAND_COLOR = "#16a34a";
 
 function layout(title: string, bodyHtml: string) {

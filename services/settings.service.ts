@@ -15,8 +15,8 @@ export interface StoreSettings {
 }
 
 const DEFAULTS: StoreSettings = {
-  name: "Hello Market",
-  logoUrl: null,
+  name: "MartWeb",
+  logoUrl: "/logo-martweb.png",
   faviconUrl: null,
   cnpj: null,
   email: "contato@hellomarket.com.br",
