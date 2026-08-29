@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/db";
 import type { AdminUser } from "@prisma/client";
 import { ALL_PERMISSIONS, ROLE_PERMISSIONS, type Permission } from "@/lib/permissions";
+import { enterTenant } from "@/lib/tenant/context";
+import { DEFAULT_COMPANY_SLUG } from "@/lib/tenant/resolve";
 
 export { ALL_PERMISSIONS, ROLE_PERMISSIONS, type Permission };
 
@@ -17,6 +19,8 @@ export interface AdminTokenPayload {
 }
 
 export async function createAdminSession(admin: AdminUser) {
+  enterTenant({ companyId: admin.companyId, companySlug: DEFAULT_COMPANY_SLUG });
+
   const token = jwt.sign({ sub: admin.id, role: admin.role }, JWT_SECRET, {
     expiresIn: SESSION_DURATION,
   });
@@ -45,6 +49,10 @@ export async function getCurrentAdmin(): Promise<AdminUser | null> {
     const payload = jwt.verify(token, JWT_SECRET) as AdminTokenPayload;
     const admin = await prisma.adminUser.findUnique({ where: { id: payload.sub } });
     if (!admin || !admin.active) return null;
+    // Bind this request's tenant from the logged-in admin's own company.
+    // Fase 1 has a single company, so the slug is fixed for now; Fase 2's
+    // path-based routing will resolve it from the URL instead.
+    enterTenant({ companyId: admin.companyId, companySlug: DEFAULT_COMPANY_SLUG });
     return admin;
   } catch {
     return null;
