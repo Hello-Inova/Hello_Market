@@ -122,12 +122,39 @@ enum CancellationStatus {
   REFUNDED
 }
 
+enum CompanyStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  SUSPENDED
+  CANCELLED
+}
+
+enum BillingCycle {
+  SEMIANNUAL
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+enum PlatformRole {
+  OWNER
+  STAFF
+}
+
 // ============================================================================
 // AUTH / RBAC (Admin)
 // ============================================================================
 
 model AdminUser {
   id           String    @id @default(cuid())
+  companyId    String?
+  company      Company?  @relation(fields: [companyId], references: [id])
   name         String
   email        String    @unique
   passwordHash String
@@ -142,6 +169,7 @@ model AdminUser {
   auditLogs AuditLog[]
 
   @@index([email])
+  @@index([companyId])
 }
 
 // ============================================================================
@@ -150,6 +178,8 @@ model AdminUser {
 
 model User {
   id                String    @id @default(cuid())
+  companyId         String?
+  company           Company?  @relation(fields: [companyId], references: [id])
   firstName         String
   lastName          String
   fullName          String
@@ -187,6 +217,7 @@ model User {
   @@index([email])
   @@index([document])
   @@index([createdAt])
+  @@index([companyId])
 }
 
 model Session {
@@ -247,6 +278,8 @@ model Address {
 
 model Category {
   id              String     @id @default(cuid())
+  companyId       String?
+  company         Company?   @relation(fields: [companyId], references: [id])
   name            String
   slug            String     @unique
   description     String?
@@ -265,10 +298,13 @@ model Category {
 
   @@index([slug])
   @@index([parentId])
+  @@index([companyId])
 }
 
 model Brand {
   id          String   @id @default(cuid())
+  companyId   String?
+  company     Company? @relation(fields: [companyId], references: [id])
   name        String
   slug        String   @unique
   logoUrl     String?
@@ -281,10 +317,13 @@ model Brand {
   products Product[]
 
   @@index([slug])
+  @@index([companyId])
 }
 
 model Product {
   id               String        @id @default(cuid())
+  companyId        String?
+  company          Company?      @relation(fields: [companyId], references: [id])
   name             String
   slug             String        @unique
   sku              String        @unique
@@ -331,6 +370,7 @@ model Product {
   @@index([categoryId])
   @@index([brandId])
   @@index([createdAt])
+  @@index([companyId])
 }
 
 model ProductImage {
@@ -349,6 +389,8 @@ model ProductImage {
 
 model ProductVariant {
   id             String   @id @default(cuid())
+  companyId      String?
+  company        Company? @relation(fields: [companyId], references: [id])
   productId      String
   product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   sku            String   @unique
@@ -371,6 +413,7 @@ model ProductVariant {
 
   @@index([productId])
   @@index([sku])
+  @@index([companyId])
 }
 
 // ============================================================================
@@ -423,6 +466,8 @@ model WishlistItem {
 
 model Coupon {
   id                 String       @id @default(cuid())
+  companyId          String?
+  company            Company?     @relation(fields: [companyId], references: [id])
   code               String       @unique
   description        String?
   type               DiscountType
@@ -446,6 +491,7 @@ model Coupon {
 
   @@index([code])
   @@index([status])
+  @@index([companyId])
 }
 
 model CouponUsage {
@@ -468,6 +514,8 @@ model CouponUsage {
 
 model Order {
   id              String      @id @default(cuid())
+  companyId       String?
+  company         Company?    @relation(fields: [companyId], references: [id])
   orderNumber     String      @unique
   userId          String
   user            User        @relation(fields: [userId], references: [id])
@@ -507,6 +555,7 @@ model Order {
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+  @@index([companyId])
 }
 
 model OrderItem {
@@ -605,6 +654,8 @@ model WebhookEvent {
 
 model InventoryMovement {
   id          String                 @id @default(cuid())
+  companyId   String?
+  company     Company?               @relation(fields: [companyId], references: [id])
   productId   String
   product     Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
   variantId   String?
@@ -621,6 +672,7 @@ model InventoryMovement {
   @@index([variantId])
   @@index([type])
   @@index([createdAt])
+  @@index([companyId])
 }
 
 // ============================================================================
@@ -629,6 +681,8 @@ model InventoryMovement {
 
 model Review {
   id        String       @id @default(cuid())
+  companyId String?
+  company   Company?     @relation(fields: [companyId], references: [id])
   productId String
   product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId    String
@@ -648,6 +702,7 @@ model Review {
   @@index([productId])
   @@index([userId])
   @@index([status])
+  @@index([companyId])
 }
 
 // ============================================================================
@@ -656,6 +711,8 @@ model Review {
 
 model Banner {
   id             String    @id @default(cuid())
+  companyId      String?
+  company        Company?  @relation(fields: [companyId], references: [id])
   title          String
   subtitle       String?
   imageUrlDesktop String
@@ -672,10 +729,13 @@ model Banner {
 
   @@index([position])
   @@index([active])
+  @@index([companyId])
 }
 
 model Page {
   id        String   @id @default(cuid())
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
   slug      String   @unique // about, contact, terms, privacy, returns, shipping, faq
   title     String
   content   String // HTML/Markdown content
@@ -686,16 +746,20 @@ model Page {
   updatedAt DateTime @updatedAt
 
   @@index([slug])
+  @@index([companyId])
 }
 
 model Setting {
   id        String   @id @default(cuid())
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
   key       String   @unique
   value     Json
   group     String   @default("general") // store, social, checkout, payments, emails
   updatedAt DateTime @updatedAt
 
   @@index([group])
+  @@index([companyId])
 }
 
 // ============================================================================
@@ -704,6 +768,8 @@ model Setting {
 
 model Notification {
   id        String           @id @default(cuid())
+  companyId String?
+  company   Company?         @relation(fields: [companyId], references: [id])
   userId    String?
   user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   type      NotificationType
@@ -716,6 +782,7 @@ model Notification {
 
   @@index([userId])
   @@index([read])
+  @@index([companyId])
 }
 
 model NotificationPreference {
@@ -753,6 +820,8 @@ model DataRequest {
 
 model AuditLog {
   id         String     @id @default(cuid())
+  companyId  String?
+  company    Company?   @relation(fields: [companyId], references: [id])
   userId     String?
   user       User?      @relation(fields: [userId], references: [id])
   adminId    String?
@@ -770,4 +839,106 @@ model AuditLog {
   @@index([action])
   @@index([entity, entityId])
   @@index([createdAt])
+  @@index([companyId])
+}
+
+// ============================================================================
+// MULTI-TENANT PLATFORM (Hello Inova)
+// ============================================================================
+
+model Company {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  name           String
+  legalName      String?
+  document       String? // CNPJ
+  status         CompanyStatus @default(TRIAL)
+  email          String?
+  phone          String?
+
+  // Theme customization
+  primaryColor   String  @default("#16a34a")
+  secondaryColor String  @default("#f4f4f5")
+  fontColor      String  @default("#18181b")
+  fontFamily     String  @default("geist")
+  logoUrl        String?
+  faviconUrl     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminUsers         AdminUser[]
+  users              User[]
+  categories         Category[]
+  brands             Brand[]
+  products           Product[]
+  productVariants    ProductVariant[]
+  coupons            Coupon[]
+  orders             Order[]
+  pages              Page[]
+  settings           Setting[]
+  banners            Banner[]
+  reviews            Review[]
+  inventoryMovements InventoryMovement[]
+  notifications      Notification[]
+  auditLogs          AuditLog[]
+  subscription       Subscription?
+
+  @@index([status])
+}
+
+model Plan {
+  id         String       @id @default(cuid())
+  name       String
+  cycle      BillingCycle
+  priceCents Int
+  active     Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  companyId           String             @unique
+  company             Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  planId              String
+  plan                Plan               @relation(fields: [planId], references: [id])
+  status              SubscriptionStatus @default(TRIALING)
+  asaasCustomerId     String?
+  asaasSubscriptionId String?
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelledAt         DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  invoices SubscriptionInvoice[]
+
+  @@index([status])
+}
+
+model SubscriptionInvoice {
+  id             String    @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  asaasPaymentId String    @unique
+  status         String
+  amountCents    Int
+  dueDate        DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([subscriptionId])
+}
+
+model PlatformAdmin {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  role         PlatformRole @default(STAFF)
+  active       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
