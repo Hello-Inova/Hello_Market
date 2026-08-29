@@ -455,6 +455,7 @@ model CouponUsage {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@index([couponId])
