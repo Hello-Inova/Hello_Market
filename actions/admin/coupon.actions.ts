@@ -45,7 +45,7 @@ export async function saveCouponAction(couponId: string | null, raw: unknown): P
   }
 
   await logAudit({ adminId: admin.id, action: couponId ? "coupon.update" : "coupon.create", entity: "Coupon", entityId: couponId ?? undefined });
-  revalidatePath("/admin/cupons");
+  revalidatePath(`/admin/${admin.companySlug}/cupons`);
 
   return { success: true };
 }
@@ -56,11 +56,11 @@ export async function deleteCouponAction(couponId: string): Promise<ActionResult
   if (usageCount > 0) {
     await prisma.coupon.update({ where: { id: couponId }, data: { status: "INACTIVE" } });
     await logAudit({ adminId: admin.id, action: "coupon.deactivate", entity: "Coupon", entityId: couponId });
-    revalidatePath("/admin/cupons");
+    revalidatePath(`/admin/${admin.companySlug}/cupons`);
     return { success: true, message: "Cupom já utilizado: foi desativado em vez de excluído." };
   }
   await prisma.coupon.delete({ where: { id: couponId } });
   await logAudit({ adminId: admin.id, action: "coupon.delete", entity: "Coupon", entityId: couponId });
-  revalidatePath("/admin/cupons");
+  revalidatePath(`/admin/${admin.companySlug}/cupons`);
   return { success: true };
 }

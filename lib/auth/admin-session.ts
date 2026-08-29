@@ -19,7 +19,8 @@ export interface AdminTokenPayload {
 }
 
 export async function createAdminSession(admin: AdminUser) {
-  enterTenant({ companyId: admin.companyId, companySlug: DEFAULT_COMPANY_SLUG });
+  const company = await prisma.company.findUnique({ where: { id: admin.companyId } });
+  enterTenant({ companyId: admin.companyId, companySlug: company?.slug ?? DEFAULT_COMPANY_SLUG });
 
   const token = jwt.sign({ sub: admin.id, role: admin.role }, JWT_SECRET, {
     expiresIn: SESSION_DURATION,
@@ -40,7 +41,9 @@ export async function createAdminSession(admin: AdminUser) {
   });
 }
 
-export async function getCurrentAdmin(): Promise<AdminUser | null> {
+export type AdminWithCompany = AdminUser & { companySlug: string };
+
+export async function getCurrentAdmin(): Promise<AdminWithCompany | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE)?.value;
   if (!token) return null;
@@ -49,17 +52,20 @@ export async function getCurrentAdmin(): Promise<AdminUser | null> {
     const payload = jwt.verify(token, JWT_SECRET) as AdminTokenPayload;
     const admin = await prisma.adminUser.findUnique({ where: { id: payload.sub } });
     if (!admin || !admin.active) return null;
-    // Bind this request's tenant from the logged-in admin's own company.
-    // Fase 1 has a single company, so the slug is fixed for now; Fase 2's
-    // path-based routing will resolve it from the URL instead.
-    enterTenant({ companyId: admin.companyId, companySlug: DEFAULT_COMPANY_SLUG });
-    return admin;
+    // Bind this request's tenant from the logged-in admin's own company,
+    // re-resolved on every call (not inherited from any ancestor layout)
+    // since a Server Action is its own request and never re-runs a page's
+    // layout tree before executing.
+    const company = await prisma.company.findUnique({ where: { id: admin.companyId } });
+    const companySlug = company?.slug ?? DEFAULT_COMPANY_SLUG;
+    enterTenant({ companyId: admin.companyId, companySlug });
+    return { ...admin, companySlug };
   } catch {
     return null;
   }
 }
 
-export async function requireAdmin(): Promise<AdminUser> {
+export async function requireAdmin(): Promise<AdminWithCompany> {
   const admin = await getCurrentAdmin();
   if (!admin) throw new Error("UNAUTHENTICATED");
   return admin;
@@ -83,7 +89,7 @@ export function adminHasPermission(admin: AdminUser, permission: Permission): bo
   return rolePerms.includes(permission);
 }
 
-export async function requirePermission(permission: Permission): Promise<AdminUser> {
+export async function requirePermission(permission: Permission): Promise<AdminWithCompany> {
   const admin = await requireAdmin();
   if (!adminHasPermission(admin, permission)) {
     throw new Error("FORBIDDEN");

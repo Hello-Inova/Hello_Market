@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth/password";
 import { createAdminSession, destroyAdminSession, getCurrentAdmin } from "@/lib/auth/admin-session";
+import { enterTenant } from "@/lib/tenant/context";
 import { logAudit } from "@/lib/audit";
 import { redirect } from "next/navigation";
 
@@ -12,10 +13,20 @@ export interface ActionResult {
 }
 
 export async function adminLoginAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  const companySlug = String(formData.get("companySlug") ?? "").trim();
   const email = String(formData.get("email") ?? "").toLowerCase().trim();
   const password = String(formData.get("password") ?? "");
 
+  if (!companySlug) return { success: false, message: "Empresa não identificada." };
   if (!email || !password) return { success: false, message: "Informe e-mail e senha." };
+
+  // O e-mail só é único dentro de uma empresa (Fase 1), então o lookup por
+  // e-mail abaixo precisa de um tenant já amarrado — nada disponível ainda
+  // nesta rota (é o login, não existe sessão), então resolve pelo slug da
+  // própria URL que o formulário carrega.
+  const company = await prisma.company.findUnique({ where: { slug: companySlug } });
+  if (!company) return { success: false, message: "Empresa não encontrada." };
+  enterTenant({ companyId: company.id, companySlug: company.slug });
 
   const admin = await prisma.adminUser.findUnique({ where: { email } });
   if (!admin || !(await verifyPassword(password, admin.passwordHash))) {
@@ -29,9 +40,9 @@ export async function adminLoginAction(_prev: ActionResult, formData: FormData):
   return { success: true };
 }
 
-export async function adminLogoutAction() {
+export async function adminLogoutAction(companySlug: string) {
   const admin = await getCurrentAdmin();
   if (admin) await logAudit({ adminId: admin.id, action: "admin.logout" });
   await destroyAdminSession();
-  redirect("/admin/login");
+  redirect(`/admin/${companySlug}/login`);
 }

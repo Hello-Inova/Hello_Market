@@ -25,7 +25,7 @@ export async function moderateReviewAction(reviewId: string, status: "APPROVED" 
   await recalculateProductRating(review.productId);
 
   await logAudit({ adminId: admin.id, action: "review.moderate", entity: "Review", entityId: reviewId, metadata: { status } });
-  revalidatePath("/admin/avaliacoes");
+  revalidatePath(`/admin/${admin.companySlug}/avaliacoes`);
 
   return { success: true };
 }
@@ -37,7 +37,7 @@ export async function deleteReviewAction(reviewId: string): Promise<ActionResult
   await recalculateProductRating(review.productId);
 
   await logAudit({ adminId: admin.id, action: "review.delete", entity: "Review", entityId: reviewId });
-  revalidatePath("/admin/avaliacoes");
+  revalidatePath(`/admin/${admin.companySlug}/avaliacoes`);
 
   return { success: true };
 }

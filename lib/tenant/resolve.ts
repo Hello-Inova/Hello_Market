@@ -36,3 +36,20 @@ export async function resolveDefaultTenant(rawClient: PrismaClient): Promise<Ten
   }
   return cachedDefaultTenantPromise;
 }
+
+/**
+ * Fase 2: resolve a empresa a partir do slug presente na URL
+ * (`/loja/[companySlug]/...` ou `/admin/[companySlug]/...`). Retorna `null`
+ * em vez de lançar quando o slug não existe — quem chama decide como reagir
+ * (tipicamente `notFound()` num layout). Recebe o client cru pelo mesmo
+ * motivo de `resolveDefaultTenant`: esta busca não deve, ela própria,
+ * depender de um tenant já estar amarrado ao contexto.
+ */
+export async function resolveTenantBySlug(
+  rawClient: PrismaClient,
+  slug: string
+): Promise<TenantContext | null> {
+  const company = await rawClient.company.findUnique({ where: { slug } });
+  if (!company) return null;
+  return { companyId: company.id, companySlug: company.slug };
+}

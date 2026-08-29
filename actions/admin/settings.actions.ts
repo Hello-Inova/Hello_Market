@@ -53,8 +53,8 @@ export async function updateStoreSettingsAction(raw: {
   ]);
 
   await logAudit({ adminId: admin.id, action: "settings.update", entity: "Setting" });
-  revalidatePath("/admin/configuracoes");
-  revalidatePath("/");
+  revalidatePath(`/admin/${admin.companySlug}/configuracoes`);
+  revalidatePath(`/loja/${admin.companySlug}`);
 
   return { success: true };
 }

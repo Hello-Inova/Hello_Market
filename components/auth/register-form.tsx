@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ const initialState: ActionResult = { success: false };
 
 export function RegisterForm() {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [state, formAction, isPending] = useActionState(registerAction, initialState);
   const guestCartRef = useRef<HTMLInputElement>(null);
 
@@ -28,7 +30,7 @@ export function RegisterForm() {
     if (state.success) {
       clearGuestCart();
       toast.success("Conta criada com sucesso!");
-      router.push("/minha-conta");
+      router.push(`${base}/minha-conta`);
       router.refresh();
     } else if (state.message && !state.fieldErrors) {
       toast.error(state.message);
@@ -66,7 +68,7 @@ export function RegisterForm() {
           <Checkbox name="acceptTerms" required className="mt-0.5" />
           <span>
             Li e aceito os{" "}
-            <Link href="/paginas/termos" target="_blank" className="text-primary hover:underline">
+            <Link href={`${base}/paginas/termos`} target="_blank" className="text-primary hover:underline">
               Termos de Uso
             </Link>
           </span>
@@ -75,7 +77,7 @@ export function RegisterForm() {
           <Checkbox name="acceptPrivacy" required className="mt-0.5" />
           <span>
             Li e aceito a{" "}
-            <Link href="/paginas/privacidade" target="_blank" className="text-primary hover:underline">
+            <Link href={`${base}/paginas/privacidade`} target="_blank" className="text-primary hover:underline">
               Política de Privacidade
             </Link>
           </span>
@@ -92,7 +94,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Já tem conta?{" "}
-        <Link href="/entrar" className="font-medium text-primary hover:underline">
+        <Link href={`${base}/entrar`} className="font-medium text-primary hover:underline">
           Entrar
         </Link>
       </p>

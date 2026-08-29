@@ -52,8 +52,8 @@ export async function updateOrderStatusAction(orderId: string, status: OrderStat
   }
 
   await logAudit({ adminId: admin.id, action: "order.update_status", entity: "Order", entityId: orderId, metadata: { status } });
-  revalidatePath(`/admin/pedidos/${orderId}`);
-  revalidatePath("/admin/pedidos");
+  revalidatePath(`/admin/${admin.companySlug}/pedidos/${orderId}`);
+  revalidatePath(`/admin/${admin.companySlug}/pedidos`);
 
   return { success: true };
 }
@@ -63,7 +63,7 @@ export async function updateOrderTrackingAction(orderId: string, carrier: string
 
   await prisma.order.update({ where: { id: orderId }, data: { carrier, trackingCode, trackingUrl } });
   await logAudit({ adminId: admin.id, action: "order.update_tracking", entity: "Order", entityId: orderId });
-  revalidatePath(`/admin/pedidos/${orderId}`);
+  revalidatePath(`/admin/${admin.companySlug}/pedidos/${orderId}`);
 
   return { success: true };
 }
@@ -72,7 +72,7 @@ export async function updateOrderNoteAction(orderId: string, internalNote: strin
   const admin = await requirePermission("orders.edit");
   await prisma.order.update({ where: { id: orderId }, data: { internalNote } });
   await logAudit({ adminId: admin.id, action: "order.update_note", entity: "Order", entityId: orderId });
-  revalidatePath(`/admin/pedidos/${orderId}`);
+  revalidatePath(`/admin/${admin.companySlug}/pedidos/${orderId}`);
   return { success: true };
 }
 
@@ -86,7 +86,7 @@ export async function processRefundAction(orderId: string): Promise<ActionResult
   ]);
 
   await logAudit({ adminId: admin.id, action: "order.refund", entity: "Order", entityId: orderId });
-  revalidatePath(`/admin/pedidos/${orderId}`);
+  revalidatePath(`/admin/${admin.companySlug}/pedidos/${orderId}`);
 
   return { success: true, message: "Reembolso registrado. Integre o gateway de pagamento para efetivar a devolução." };
 }
@@ -111,7 +111,7 @@ export async function resolveCancellationRequestAction(requestId: string, approv
   });
 
   await logAudit({ adminId: admin.id, action: "order.resolve_cancellation", entity: "Order", entityId: request.orderId, metadata: { approve } });
-  revalidatePath(`/admin/pedidos/${request.orderId}`);
+  revalidatePath(`/admin/${admin.companySlug}/pedidos/${request.orderId}`);
 
   return { success: true };
 }

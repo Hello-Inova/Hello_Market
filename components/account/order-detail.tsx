@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Package, RotateCcw, Star, Truck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,7 @@ interface Props {
 
 export function OrderDetail({ order }: Props) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [cancelOpen, setCancelOpen] = useState(false);
   const [reviewProduct, setReviewProduct] = useState<OrderItem | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -88,7 +89,7 @@ export function OrderDetail({ order }: Props) {
       const result = await buyAgainAction(order.id);
       if (result.success) {
         toast.success(result.message);
-        router.push("/carrinho");
+        router.push(`/loja/${companySlug}/carrinho`);
       } else {
         toast.error(result.message);
       }

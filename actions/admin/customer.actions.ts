@@ -25,8 +25,8 @@ export async function toggleCustomerBlockAction(customerId: string, blocked: boo
     entityId: customerId,
   });
 
-  revalidatePath(`/admin/clientes/${customerId}`);
-  revalidatePath("/admin/clientes");
+  revalidatePath(`/admin/${admin.companySlug}/clientes/${customerId}`);
+  revalidatePath(`/admin/${admin.companySlug}/clientes`);
 
   return { success: true };
 }
@@ -36,6 +36,6 @@ export async function updateCustomerNoteAction(customerId: string, note: string)
   // Stored via AuditLog metadata trail since there's no dedicated note field —
   // kept simple and auditable rather than adding a new column mid-flight.
   await logAudit({ adminId: admin.id, action: "customer.note", entity: "User", entityId: customerId, metadata: { note } });
-  revalidatePath(`/admin/clientes/${customerId}`);
+  revalidatePath(`/admin/${admin.companySlug}/clientes/${customerId}`);
   return { success: true };
 }

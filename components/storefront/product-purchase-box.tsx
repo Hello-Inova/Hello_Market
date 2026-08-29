@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Heart, Loader2, Minus, Plus, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,8 @@ interface Props {
 
 export function ProductPurchaseBox({ product, variants, isLoggedIn, isFavorited }: Props) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const optionGroups = useMemo(() => buildOptionGroups(variants), [variants]);
   const [selected, setSelected] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
@@ -72,14 +74,14 @@ export function ProductPurchaseBox({ product, variants, isLoggedIn, isFavorited 
       if (!isLoggedIn) {
         addToGuestCart({ productId: product.id, variantId: selectedVariant?.id, quantity });
         toast.success("Adicionado ao carrinho");
-        router.push(redirectToCheckout ? "/entrar?next=/checkout" : "/carrinho");
+        router.push(redirectToCheckout ? `${base}/entrar?next=${base}/checkout` : `${base}/carrinho`);
         return;
       }
 
       const result = await addToCartAction(product.id, quantity, selectedVariant?.id);
       if (result.success) {
         toast.success("Adicionado ao carrinho");
-        router.push(redirectToCheckout ? "/checkout" : "/carrinho");
+        router.push(redirectToCheckout ? `${base}/checkout` : `${base}/carrinho`);
         router.refresh();
       } else {
         toast.error(result.message || "Não foi possível adicionar ao carrinho");
@@ -91,7 +93,7 @@ export function ProductPurchaseBox({ product, variants, isLoggedIn, isFavorited 
 
   async function handleFavorite() {
     if (!isLoggedIn) {
-      router.push("/entrar?next=" + encodeURIComponent(window.location.pathname));
+      router.push(`${base}/entrar?next=` + encodeURIComponent(window.location.pathname));
       return;
     }
     const result = await toggleWishlistAction(product.id, selectedVariant?.id);

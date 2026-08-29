@@ -51,8 +51,8 @@ export async function adjustProductStockAction(raw: unknown): Promise<ActionResu
     throw err;
   }
 
-  revalidatePath("/admin/estoque");
-  revalidatePath("/admin/produtos");
+  revalidatePath(`/admin/${admin.companySlug}/estoque`);
+  revalidatePath(`/admin/${admin.companySlug}/produtos`);
 
   return { success: true };
 }

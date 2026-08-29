@@ -27,8 +27,8 @@ export async function saveCategoryAction(categoryId: string | null, raw: unknown
   }
 
   await logAudit({ adminId: admin.id, action: categoryId ? "category.update" : "category.create", entity: "Category" });
-  revalidatePath("/admin/categorias");
-  revalidatePath("/produtos");
+  revalidatePath(`/admin/${admin.companySlug}/categorias`);
+  revalidatePath(`/loja/${admin.companySlug}/produtos`);
   return { success: true };
 }
 
@@ -40,7 +40,7 @@ export async function deleteCategoryAction(categoryId: string): Promise<ActionRe
   }
   await prisma.category.delete({ where: { id: categoryId } });
   await logAudit({ adminId: admin.id, action: "category.delete", entity: "Category", entityId: categoryId });
-  revalidatePath("/admin/categorias");
+  revalidatePath(`/admin/${admin.companySlug}/categorias`);
   return { success: true };
 }
 
@@ -59,7 +59,7 @@ export async function saveBrandAction(brandId: string | null, raw: unknown): Pro
   }
 
   await logAudit({ adminId: admin.id, action: brandId ? "brand.update" : "brand.create", entity: "Brand" });
-  revalidatePath("/admin/marcas");
+  revalidatePath(`/admin/${admin.companySlug}/marcas`);
   return { success: true };
 }
 
@@ -71,6 +71,6 @@ export async function deleteBrandAction(brandId: string): Promise<ActionResult> 
   }
   await prisma.brand.delete({ where: { id: brandId } });
   await logAudit({ adminId: admin.id, action: "brand.delete", entity: "Brand", entityId: brandId });
-  revalidatePath("/admin/marcas");
+  revalidatePath(`/admin/${admin.companySlug}/marcas`);
   return { success: true };
 }

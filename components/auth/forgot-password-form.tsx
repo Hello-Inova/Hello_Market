@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { forgotPasswordAction, type ActionResult } from "@/actions/auth.actions"
 const initialState: ActionResult = { success: false };
 
 export function ForgotPasswordForm() {
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [state, formAction, isPending] = useActionState(forgotPasswordAction, initialState);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export function ForgotPasswordForm() {
       )}
 
       <p className="text-center text-sm text-muted-foreground">
-        <Link href="/entrar" className="font-medium text-primary hover:underline">
+        <Link href={`/loja/${companySlug}/entrar`} className="font-medium text-primary hover:underline">
           Voltar para o login
         </Link>
       </p>

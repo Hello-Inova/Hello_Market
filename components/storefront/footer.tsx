@@ -30,6 +30,7 @@ function Youtube(props: React.SVGProps<SVGSVGElement>) {
 
 interface FooterProps {
   storeName: string;
+  companySlug: string;
   email?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
@@ -37,7 +38,8 @@ interface FooterProps {
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string };
 }
 
-export function Footer({ storeName, email, phone, address, social }: FooterProps) {
+export function Footer({ storeName, companySlug, email, phone, address, social }: FooterProps) {
+  const base = `/loja/${companySlug}`;
   return (
     <footer className="mt-16 border-t bg-secondary/40">
     <div className="container-page grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
@@ -68,21 +70,21 @@ export function Footer({ storeName, email, phone, address, social }: FooterProps
 <div>
   <h4 className="mb-3 text-sm font-semibold">Institucional</h4>
   <ul className="space-y-2 text-sm text-muted-foreground">
-  <li><Link href="/paginas/sobre" className="hover:text-primary">Sobre nós</Link></li>
-  <li><Link href="/paginas/contato" className="hover:text-primary">Contato</Link></li>
-  <li><Link href="/paginas/trocas" className="hover:text-primary">Trocas e devoluções</Link></li>
-  <li><Link href="/paginas/entregas" className="hover:text-primary">Entregas</Link></li>
-  <li><Link href="/paginas/faq" className="hover:text-primary">Perguntas frequentes</Link></li>
+  <li><Link href={`${base}/paginas/sobre`} className="hover:text-primary">Sobre nós</Link></li>
+  <li><Link href={`${base}/paginas/contato`} className="hover:text-primary">Contato</Link></li>
+  <li><Link href={`${base}/paginas/trocas`} className="hover:text-primary">Trocas e devoluções</Link></li>
+  <li><Link href={`${base}/paginas/entregas`} className="hover:text-primary">Entregas</Link></li>
+  <li><Link href={`${base}/paginas/faq`} className="hover:text-primary">Perguntas frequentes</Link></li>
   </ul>
   </div>
 
 <div>
   <h4 className="mb-3 text-sm font-semibold">Sua conta</h4>
   <ul className="space-y-2 text-sm text-muted-foreground">
-  <li><Link href="/minha-conta/pedidos" className="hover:text-primary">Meus pedidos</Link></li>
-  <li><Link href="/minha-conta/favoritos" className="hover:text-primary">Favoritos</Link></li>
-  <li><Link href="/paginas/termos" className="hover:text-primary">Termos de uso</Link></li>
-  <li><Link href="/paginas/privacidade" className="hover:text-primary">Política de privacidade</Link></li>
+  <li><Link href={`${base}/minha-conta/pedidos`} className="hover:text-primary">Meus pedidos</Link></li>
+  <li><Link href={`${base}/minha-conta/favoritos`} className="hover:text-primary">Favoritos</Link></li>
+  <li><Link href={`${base}/paginas/termos`} className="hover:text-primary">Termos de uso</Link></li>
+  <li><Link href={`${base}/paginas/privacidade`} className="hover:text-primary">Política de privacidade</Link></li>
   </ul>
   </div>
 

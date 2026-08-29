@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ interface CmsPage {
 
 export function PageManager({ pages }: { pages: CmsPage[] }) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<CmsPage | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -82,10 +83,10 @@ export function PageManager({ pages }: { pages: CmsPage[] }) {
             {pages.map((p) => (
               <tr key={p.id} className="border-b last:border-0">
                 <td className="p-3 font-medium">{p.title}</td>
-                <td className="p-3 text-muted-foreground">/paginas/{p.slug}</td>
+                <td className="p-3 text-muted-foreground">/loja/{companySlug}/paginas/{p.slug}</td>
                 <td className="p-3"><Badge variant={p.published ? "success" : "secondary"}>{p.published ? "Publicada" : "Rascunho"}</Badge></td>
                 <td className="p-3 text-right">
-                  <a href={`/paginas/${p.slug}`} target="_blank" rel="noopener noreferrer" className="mr-3 text-primary"><ExternalLink className="h-4 w-4 inline" /></a>
+                  <a href={`/loja/${companySlug}/paginas/${p.slug}`} target="_blank" rel="noopener noreferrer" className="mr-3 text-primary"><ExternalLink className="h-4 w-4 inline" /></a>
                   <button onClick={() => { setEditing(p); setOpen(true); }} className="mr-3 text-primary"><Pencil className="h-4 w-4 inline" /></button>
                   <button
                     onClick={() => startTransition(async () => {

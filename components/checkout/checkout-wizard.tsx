@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Loader2, MapPin, Truck, CreditCard, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,7 @@ export function CheckoutWizard({
   appliedCouponCode: string | null;
 }) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [step, setStep] = useState(0);
   const [addresses, setAddresses] = useState(initialAddresses);
   const [addressId, setAddressId] = useState(initialAddresses.find((a) => a.isDefault)?.id ?? initialAddresses[0]?.id ?? "");
@@ -139,7 +140,7 @@ export function CheckoutWizard({
       if (response.success) {
         setResult({ orderNumber: response.orderNumber! });
         toast.success("Pedido realizado com sucesso!");
-        setTimeout(() => router.push(`/minha-conta/pedidos/${response.orderId}`), 1500);
+        setTimeout(() => router.push(`/loja/${companySlug}/minha-conta/pedidos/${response.orderId}`), 1500);
       } else {
         toast.error(response.message || "Não foi possível concluir o pedido.");
       }

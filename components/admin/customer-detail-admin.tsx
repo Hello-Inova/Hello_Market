@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ interface Props {
 
 export function CustomerDetailAdmin({ customer }: Props) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [isPending, startTransition] = useTransition();
   const [reason, setReason] = useState(customer.blockedReason ?? "");
 
@@ -56,7 +57,7 @@ export function CustomerDetailAdmin({ customer }: Props) {
               {customer.orders.map((o) => (
                 <Link
                   key={o.id}
-                  href={`/admin/pedidos/${o.id}`}
+                  href={`/admin/${companySlug}/pedidos/${o.id}`}
                   className="flex items-center justify-between border-b py-2 text-sm last:border-0 hover:bg-secondary/40"
                 >
                   <div>

@@ -16,7 +16,7 @@ export interface ProductCardData {
   images: { url: string; altText?: string | null }[];
 }
 
-export function ProductCard({ product }: { product: ProductCardData }) {
+export function ProductCard({ product, basePath }: { product: ProductCardData; basePath: string }) {
   const price = Number(product.price);
   const compareAt = product.compareAtPrice ? Number(product.compareAtPrice) : null;
   const discountPct = compareAt && compareAt > price ? Math.round(((compareAt - price) / compareAt) * 100) : null;
@@ -24,7 +24,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
 
   return (
     <Link
-      href={`/produto/${product.slug}`}
+      href={`${basePath}/produto/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-md"
     >
       <div className="relative aspect-square w-full overflow-hidden bg-secondary">

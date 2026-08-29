@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,12 +12,13 @@ const initialState: ActionResult = { success: false };
 
 export function ResetPasswordForm({ token }: { token: string }) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [state, formAction, isPending] = useActionState(resetPasswordAction, initialState);
 
   useEffect(() => {
     if (state.success) {
       toast.success(state.message);
-      router.push("/entrar");
+      router.push(`/loja/${companySlug}/entrar`);
     } else if (state.message) {
       toast.error(state.message);
     }

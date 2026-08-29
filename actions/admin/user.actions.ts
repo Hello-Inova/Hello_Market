@@ -55,7 +55,7 @@ export async function saveAdminUserAction(adminUserId: string | null, raw: unkno
   }
 
   await logAudit({ adminId: actingAdmin.id, action: adminUserId ? "admin_user.update" : "admin_user.create", entity: "AdminUser", entityId: adminUserId ?? undefined });
-  revalidatePath("/admin/usuarios");
+  revalidatePath(`/admin/${actingAdmin.companySlug}/usuarios`);
 
   return { success: true };
 }
@@ -69,7 +69,7 @@ export async function toggleAdminUserActiveAction(adminUserId: string, active: b
 
   await prisma.adminUser.update({ where: { id: adminUserId }, data: { active } });
   await logAudit({ adminId: actingAdmin.id, action: active ? "admin_user.activate" : "admin_user.deactivate", entity: "AdminUser", entityId: adminUserId });
-  revalidatePath("/admin/usuarios");
+  revalidatePath(`/admin/${actingAdmin.companySlug}/usuarios`);
 
   return { success: true };
 }
@@ -81,7 +81,7 @@ export async function deleteAdminUserAction(adminUserId: string): Promise<Action
   }
   await prisma.adminUser.delete({ where: { id: adminUserId } });
   await logAudit({ adminId: actingAdmin.id, action: "admin_user.delete", entity: "AdminUser", entityId: adminUserId });
-  revalidatePath("/admin/usuarios");
+  revalidatePath(`/admin/${actingAdmin.companySlug}/usuarios`);
   return { success: true };
 }
 

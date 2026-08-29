@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useTransition } from "react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,8 @@ interface Item {
 }
 
 export function WishlistGrid({ items }: { items: Item[] }) {
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [isPending, startTransition] = useTransition();
 
   if (items.length === 0) {
@@ -37,11 +40,11 @@ export function WishlistGrid({ items }: { items: Item[] }) {
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {items.map((item) => (
         <div key={item.id} className="overflow-hidden rounded-xl border">
-          <Link href={`/produto/${item.slug}`} className="relative block aspect-square bg-secondary">
+          <Link href={`${base}/produto/${item.slug}`} className="relative block aspect-square bg-secondary">
             {item.imageUrl && <Image src={item.imageUrl} alt={item.name} fill className="object-cover" sizes="200px" />}
           </Link>
           <div className="p-3">
-            <Link href={`/produto/${item.slug}`} className="line-clamp-2 text-sm font-medium hover:text-primary">
+            <Link href={`${base}/produto/${item.slug}`} className="line-clamp-2 text-sm font-medium hover:text-primary">
               {item.name}
             </Link>
             <p className="mt-1 font-bold">{formatCurrency(item.price)}</p>

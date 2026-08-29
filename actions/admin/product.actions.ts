@@ -132,8 +132,8 @@ export async function saveProductAction(productId: string | null, raw: unknown):
     entityId: product.id,
   });
 
-  revalidatePath("/admin/produtos");
-  revalidatePath(`/produto/${slug}`);
+  revalidatePath(`/admin/${admin.companySlug}/produtos`);
+  revalidatePath(`/loja/${admin.companySlug}/produto/${slug}`);
 
   return { success: true, productId: product.id };
 }
@@ -142,7 +142,7 @@ export async function deleteProductAction(productId: string): Promise<ActionResu
   const admin = await requirePermission("products.delete");
   await prisma.product.update({ where: { id: productId }, data: { status: "ARCHIVED" } });
   await logAudit({ adminId: admin.id, action: "product.archive", entity: "Product", entityId: productId });
-  revalidatePath("/admin/produtos");
+  revalidatePath(`/admin/${admin.companySlug}/produtos`);
   return { success: true };
 }
 
@@ -197,7 +197,7 @@ export async function duplicateProductAction(productId: string): Promise<ActionR
   });
 
   await logAudit({ adminId: admin.id, action: "product.duplicate", entity: "Product", entityId: copy.id });
-  revalidatePath("/admin/produtos");
+  revalidatePath(`/admin/${admin.companySlug}/produtos`);
 
   return { success: true, productId: copy.id };
 }
@@ -206,7 +206,7 @@ export async function toggleProductStatusAction(productId: string, status: "ACTI
   const admin = await requirePermission("products.edit");
   await prisma.product.update({ where: { id: productId }, data: { status } });
   await logAudit({ adminId: admin.id, action: "product.toggle_status", entity: "Product", entityId: productId, metadata: { status } });
-  revalidatePath("/admin/produtos");
+  revalidatePath(`/admin/${admin.companySlug}/produtos`);
   return { success: true };
 }
 

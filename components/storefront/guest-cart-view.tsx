@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
@@ -19,6 +20,8 @@ interface HydratedProduct {
 }
 
 export function GuestCartView() {
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [items, setItems] = useState<GuestCartItem[]>([]);
   const [products, setProducts] = useState<Record<string, HydratedProduct>>({});
   const [loading, setLoading] = useState(true);
@@ -64,7 +67,7 @@ export function GuestCartView() {
       <div className="rounded-xl border border-dashed p-16 text-center">
         <p className="mb-4 text-muted-foreground">Seu carrinho está vazio.</p>
         <Button asChild>
-          <Link href="/produtos">Continuar comprando</Link>
+          <Link href={`${base}/produtos`}>Continuar comprando</Link>
         </Button>
       </div>
     );
@@ -94,7 +97,7 @@ export function GuestCartView() {
               )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Link href={`/produto/${product.slug}`} className="font-medium hover:text-primary">
+              <Link href={`${base}/produto/${product.slug}`} className="font-medium hover:text-primary">
                 {product.name}
               </Link>
               {variant && <p className="text-xs text-muted-foreground">{variant.name}</p>}
@@ -129,10 +132,10 @@ export function GuestCartView() {
           itens serão mantidos.
         </p>
         <Button size="lg" className="w-full" asChild>
-          <Link href="/entrar?next=/checkout">Entrar para finalizar</Link>
+          <Link href={`${base}/entrar?next=${base}/checkout`}>Entrar para finalizar</Link>
         </Button>
         <Button variant="outline" size="lg" className="w-full" asChild>
-          <Link href="/cadastro">Criar conta</Link>
+          <Link href={`${base}/cadastro`}>Criar conta</Link>
         </Button>
       </div>
     </div>

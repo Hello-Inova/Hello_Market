@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Plus, Trash2, Loader2 } from "lucide-react";
@@ -65,6 +65,7 @@ interface Props {
 
 export function ProductForm({ product, categories, brands }: Props) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
   const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState(product?.name ?? "");
@@ -167,7 +168,7 @@ export function ProductForm({ product, categories, brands }: Props) {
       const result = await saveProductAction(product?.id ?? null, payload);
       if (result.success) {
         toast.success("Produto salvo com sucesso!");
-        router.push("/admin/produtos");
+        router.push(`/admin/${companySlug}/produtos`);
         router.refresh();
       } else {
         toast.error(result.message || "Não foi possível salvar o produto.");
@@ -342,7 +343,7 @@ export function ProductForm({ product, categories, brands }: Props) {
       </Tabs>
 
       <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => router.push("/admin/produtos")}>Cancelar</Button>
+        <Button variant="outline" onClick={() => router.push(`/admin/${companySlug}/produtos`)}>Cancelar</Button>
         <Button onClick={handleSubmit} disabled={isPending}>
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar produto"}
         </Button>

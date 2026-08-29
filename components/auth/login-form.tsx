@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ const initialState: ActionResult = { success: false };
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [state, formAction, isPending] = useActionState(loginAction, initialState);
   const guestCartRef = useRef<HTMLInputElement>(null);
 
@@ -30,7 +32,7 @@ export function LoginForm() {
   useEffect(() => {
     if (state.success) {
       clearGuestCart();
-      const next = searchParams.get("next") || "/minha-conta";
+      const next = searchParams.get("next") || `${base}/minha-conta`;
       router.push(next);
       router.refresh();
     } else if (state.message) {
@@ -54,7 +56,7 @@ export function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Senha</Label>
-          <Link href="/esqueci-senha" className="text-xs text-primary hover:underline">
+          <Link href={`${base}/esqueci-senha`} className="text-xs text-primary hover:underline">
             Esqueci minha senha
           </Link>
         </div>
@@ -67,7 +69,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Não tem conta?{" "}
-        <Link href="/cadastro" className="font-medium text-primary hover:underline">
+        <Link href={`${base}/cadastro`} className="font-medium text-primary hover:underline">
           Criar conta
         </Link>
       </p>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,13 +25,15 @@ interface HeaderProps {
 
 export function Header({ user, cartCount, categories, storeName, logoUrl }: HeaderProps) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/busca?q=${encodeURIComponent(query.trim())}`);
+      router.push(`${base}/busca?q=${encodeURIComponent(query.trim())}`);
       setMobileOpen(false);
     }
   }
@@ -47,7 +49,7 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
 
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <Link href={base} className="flex items-center gap-2 shrink-0">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={logoUrl} alt={storeName} className="h-8 w-auto" />
@@ -81,13 +83,13 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
                 <DropdownMenuLabel>Olá, {user.fullName.split(" ")[0]}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/minha-conta">Minha conta</Link>
+                  <Link href={`${base}/minha-conta`}>Minha conta</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/minha-conta/pedidos">Meus pedidos</Link>
+                  <Link href={`${base}/minha-conta/pedidos`}>Meus pedidos</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/minha-conta/favoritos">Favoritos</Link>
+                  <Link href={`${base}/minha-conta/favoritos`}>Favoritos</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -101,18 +103,18 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
             </DropdownMenu>
           ) : (
             <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-              <Link href="/entrar">Entrar</Link>
+              <Link href={`${base}/entrar`}>Entrar</Link>
             </Button>
           )}
 
           <Button variant="ghost" size="icon" asChild aria-label="Favoritos" className="hidden sm:inline-flex">
-            <Link href={user ? "/minha-conta/favoritos" : "/entrar?next=/minha-conta/favoritos"}>
+            <Link href={user ? `${base}/minha-conta/favoritos` : `${base}/entrar?next=${base}/minha-conta/favoritos`}>
               <Heart className="h-5 w-5" />
             </Link>
           </Button>
 
           <Button variant="ghost" size="icon" asChild aria-label="Carrinho" className="relative">
-            <Link href="/carrinho">
+            <Link href={`${base}/carrinho`}>
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
@@ -127,7 +129,7 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
       <nav className="hidden md:block border-t">
         <div className="container-page flex h-11 items-center gap-6 overflow-x-auto text-sm">
           {categories.map((c) => (
-            <Link key={c.slug} href={`/produtos?categoria=${c.slug}`} className="whitespace-nowrap text-muted-foreground hover:text-foreground">
+            <Link key={c.slug} href={`${base}/produtos?categoria=${c.slug}`} className="whitespace-nowrap text-muted-foreground hover:text-foreground">
               {c.name}
             </Link>
           ))}
@@ -151,7 +153,7 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
             {categories.map((c) => (
               <Link
                 key={c.slug}
-                href={`/produtos?categoria=${c.slug}`}
+                href={`${base}/produtos?categoria=${c.slug}`}
                 onClick={() => setMobileOpen(false)}
                 className="text-foreground"
               >
@@ -162,14 +164,14 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
           <div className="flex flex-col gap-3 border-t pt-3 text-sm">
             {user ? (
               <>
-                <Link href="/minha-conta" onClick={() => setMobileOpen(false)}>Minha conta</Link>
-                <Link href="/minha-conta/pedidos" onClick={() => setMobileOpen(false)}>Meus pedidos</Link>
-                <Link href="/minha-conta/favoritos" onClick={() => setMobileOpen(false)}>Favoritos</Link>
+                <Link href={`${base}/minha-conta`} onClick={() => setMobileOpen(false)}>Minha conta</Link>
+                <Link href={`${base}/minha-conta/pedidos`} onClick={() => setMobileOpen(false)}>Meus pedidos</Link>
+                <Link href={`${base}/minha-conta/favoritos`} onClick={() => setMobileOpen(false)}>Favoritos</Link>
               </>
             ) : (
               <>
-                <Link href="/entrar" onClick={() => setMobileOpen(false)}>Entrar</Link>
-                <Link href="/cadastro" onClick={() => setMobileOpen(false)}>Criar conta</Link>
+                <Link href={`${base}/entrar`} onClick={() => setMobileOpen(false)}>Entrar</Link>
+                <Link href={`${base}/cadastro`} onClick={() => setMobileOpen(false)}>Criar conta</Link>
               </>
             )}
           </div>

@@ -43,8 +43,8 @@ export async function saveBannerContentAction(bannerId: string | null, raw: unkn
   }
 
   await logAudit({ adminId: admin.id, action: bannerId ? "banner.update" : "banner.create", entity: "Banner", entityId: bannerId ?? undefined });
-  revalidatePath("/admin/banners");
-  revalidatePath("/");
+  revalidatePath(`/admin/${admin.companySlug}/banners`);
+  revalidatePath(`/loja/${admin.companySlug}`);
 
   return { success: true };
 }
@@ -53,8 +53,8 @@ export async function deleteBannerAction(bannerId: string): Promise<ActionResult
   const admin = await requirePermission("banners.manage");
   await prisma.banner.delete({ where: { id: bannerId } });
   await logAudit({ adminId: admin.id, action: "banner.delete", entity: "Banner", entityId: bannerId });
-  revalidatePath("/admin/banners");
-  revalidatePath("/");
+  revalidatePath(`/admin/${admin.companySlug}/banners`);
+  revalidatePath(`/loja/${admin.companySlug}`);
   return { success: true };
 }
 
@@ -91,8 +91,8 @@ export async function savePageAction(pageId: string | null, raw: unknown): Promi
   }
 
   await logAudit({ adminId: admin.id, action: pageId ? "page.update" : "page.create", entity: "Page", entityId: pageId ?? undefined });
-  revalidatePath("/admin/paginas");
-  revalidatePath(`/paginas/${slug}`);
+  revalidatePath(`/admin/${admin.companySlug}/paginas`);
+  revalidatePath(`/loja/${admin.companySlug}/paginas/${slug}`);
 
   return { success: true };
 }
@@ -101,7 +101,7 @@ export async function deletePageAction(pageId: string): Promise<ActionResult> {
   const admin = await requirePermission("pages.manage");
   const page = await prisma.page.delete({ where: { id: pageId } });
   await logAudit({ adminId: admin.id, action: "page.delete", entity: "Page", entityId: pageId });
-  revalidatePath("/admin/paginas");
-  revalidatePath(`/paginas/${page.slug}`);
+  revalidatePath(`/admin/${admin.companySlug}/paginas`);
+  revalidatePath(`/loja/${admin.companySlug}/paginas/${page.slug}`);
   return { success: true };
 }

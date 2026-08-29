@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Minus, Plus, Trash2, Loader2, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,8 @@ export function CartView({
   discount: number;
 }) {
   const router = useRouter();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/loja/${companySlug}`;
   const [isPending, startTransition] = useTransition();
   const [couponCode, setCouponCode] = useState("");
 
@@ -82,7 +84,7 @@ export function CartView({
       <div className="rounded-xl border border-dashed p-16 text-center">
         <p className="mb-4 text-muted-foreground">Seu carrinho está vazio.</p>
         <Button asChild>
-          <Link href="/produtos">Continuar comprando</Link>
+          <Link href={`${base}/produtos`}>Continuar comprando</Link>
         </Button>
       </div>
     );
@@ -99,7 +101,7 @@ export function CartView({
               )}
             </div>
             <div className="flex flex-1 flex-col">
-              <Link href={`/produto/${item.productSlug}`} className="font-medium hover:text-primary">
+              <Link href={`${base}/produto/${item.productSlug}`} className="font-medium hover:text-primary">
                 {item.productName}
               </Link>
               {item.variantName && <p className="text-xs text-muted-foreground">{item.variantName}</p>}
@@ -179,10 +181,10 @@ export function CartView({
         </div>
 
         <Button size="lg" className="w-full" asChild>
-          <Link href="/checkout">Finalizar compra</Link>
+          <Link href={`${base}/checkout`}>Finalizar compra</Link>
         </Button>
         <Button variant="ghost" className="w-full" asChild>
-          <Link href="/produtos">Continuar comprando</Link>
+          <Link href={`${base}/produtos`}>Continuar comprando</Link>
         </Button>
       </div>
     </div>

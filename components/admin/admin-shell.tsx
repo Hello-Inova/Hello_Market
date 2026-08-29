@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
@@ -25,20 +25,20 @@ import { cn } from "@/lib/utils";
 import { adminLogoutAction } from "@/actions/admin-auth.actions";
 
 const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/produtos", label: "Produtos", icon: Package },
-  { href: "/admin/categorias", label: "Categorias", icon: FolderTree },
-  { href: "/admin/marcas", label: "Marcas", icon: BadgeCheck },
-  { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
-  { href: "/admin/clientes", label: "Clientes", icon: Users },
-  { href: "/admin/estoque", label: "Estoque", icon: Boxes },
-  { href: "/admin/cupons", label: "Cupons", icon: Tag },
-  { href: "/admin/avaliacoes", label: "Avaliações", icon: Star },
-  { href: "/admin/banners", label: "Banners", icon: ImageIcon },
-  { href: "/admin/paginas", label: "Páginas", icon: FileText },
-  { href: "/admin/usuarios", label: "Usuários e permissões", icon: ShieldCheck },
-  { href: "/admin/auditoria", label: "Auditoria", icon: ScrollText },
-  { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
+  { href: "", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/produtos", label: "Produtos", icon: Package },
+  { href: "/categorias", label: "Categorias", icon: FolderTree },
+  { href: "/marcas", label: "Marcas", icon: BadgeCheck },
+  { href: "/pedidos", label: "Pedidos", icon: ShoppingBag },
+  { href: "/clientes", label: "Clientes", icon: Users },
+  { href: "/estoque", label: "Estoque", icon: Boxes },
+  { href: "/cupons", label: "Cupons", icon: Tag },
+  { href: "/avaliacoes", label: "Avaliações", icon: Star },
+  { href: "/banners", label: "Banners", icon: ImageIcon },
+  { href: "/paginas", label: "Páginas", icon: FileText },
+  { href: "/usuarios", label: "Usuários e permissões", icon: ShieldCheck },
+  { href: "/auditoria", label: "Auditoria", icon: ScrollText },
+  { href: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
 export function AdminShell({
@@ -49,6 +49,8 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { companySlug } = useParams<{ companySlug: string }>();
+  const base = `/admin/${companySlug}`;
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const SidebarContent = (
@@ -59,11 +61,12 @@ export function AdminShell({
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-4">
         {NAV.map((item) => {
-          const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+          const href = `${base}${item.href}`;
+          const active = pathname === href || (item.href !== "" && pathname.startsWith(href));
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               onClick={() => setMobileOpen(false)}
               className={cn(
                 "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors",
@@ -80,7 +83,7 @@ export function AdminShell({
           <p className="truncate text-sm font-medium text-white">{admin.name}</p>
           <p className="truncate text-xs text-zinc-500">{admin.role}</p>
         </div>
-        <form action={adminLogoutAction}>
+        <form action={adminLogoutAction.bind(null, companySlug)}>
           <button
             type="submit"
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white"
