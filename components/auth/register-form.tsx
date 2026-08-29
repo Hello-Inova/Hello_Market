@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -117,10 +118,36 @@ function Field({
   required?: boolean;
   placeholder?: string;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordField = type === "password";
+
   return (
     <div className="space-y-1.5">
       <Label htmlFor={name}>{label}</Label>
-      <Input id={name} name={name} type={type} required={required} placeholder={placeholder} aria-invalid={!!error} />
+      {isPasswordField ? (
+        <div className="relative">
+          <Input
+            id={name}
+            name={name}
+            type={showPassword ? "text" : "password"}
+            required={required}
+            placeholder={placeholder}
+            aria-invalid={!!error}
+            className="pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      ) : (
+        <Input id={name} name={name} type={type} required={required} placeholder={placeholder} aria-invalid={!!error} />
+      )}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

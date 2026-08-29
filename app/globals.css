@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  /* Fundo levemente acinzentado (em vez de branco puro) para dar um
+     acabamento mais elegante ao site; os cards continuam brancos
+     (--card) para se destacarem sobre esse fundo. */
+  --background: #f7f8fa;
   --foreground: #18181b;
   --card: #ffffff;
   --card-foreground: #18181b;

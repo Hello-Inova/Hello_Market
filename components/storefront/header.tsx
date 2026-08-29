@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
-import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { Heart, Home, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -82,6 +82,11 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Olá, {user.fullName.split(" ")[0]}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href={base} className="flex items-center gap-2">
+                    <Home className="h-4 w-4" /> Home Site
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href={`${base}/minha-conta`}>Minha conta</Link>
                 </DropdownMenuItem>
@@ -162,6 +167,9 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
             ))}
           </div>
           <div className="flex flex-col gap-3 border-t pt-3 text-sm">
+            <Link href={base} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 font-medium text-primary">
+              <Home className="h-4 w-4" /> Home Site
+            </Link>
             {user ? (
               <>
                 <Link href={`${base}/minha-conta`} onClick={() => setMobileOpen(false)}>Minha conta</Link>

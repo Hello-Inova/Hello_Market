@@ -1,9 +1,13 @@
+import { getCorreiosPrazo, CORREIOS_PRODUTO } from "./correios";
+
 export interface ShippingOption {
   id: string;
   name: string;
   price: number;
   days: number;
   carrier: string;
+  /** true quando o prazo veio de uma consulta real aos Correios (não da estimativa mock). */
+  realEstimate?: boolean;
 }
 
 export interface ShippingQuoteInput {
@@ -35,13 +39,34 @@ export async function getShippingOptions(
       "Integração com Frenet pronta para ativação: implemente a chamada à API em lib/shipping/index.ts."
     );
   }
+
+  const options = mockShippingOptions(input);
+
   if (provider === "correios") {
-    throw new Error(
-      "Integração com Correios pronta para ativação: implemente a chamada à API em lib/shipping/index.ts."
-    );
+    // Consulta o prazo real dos Correios para PAC (entrega econômica) e
+    // SEDEX (entrega expressa); sem credenciais configuradas, ou em caso de
+    // qualquer falha, cada chamada volta `null` e o prazo estimado (mock)
+    // é mantido — o checkout nunca quebra por causa dessa consulta.
+    const [pacPrazo, sedexPrazo] = await Promise.all([
+      getCorreiosPrazo(input.zipCode, CORREIOS_PRODUTO.PAC),
+      getCorreiosPrazo(input.zipCode, CORREIOS_PRODUTO.SEDEX),
+    ]);
+
+    const economic = options.find((o) => o.id === "economic");
+    if (economic && pacPrazo !== null) {
+      economic.days = pacPrazo;
+      economic.carrier = "Correios (PAC)";
+      economic.realEstimate = true;
+    }
+    const express = options.find((o) => o.id === "express");
+    if (express && sedexPrazo !== null) {
+      express.days = sedexPrazo;
+      express.carrier = "Correios (SEDEX)";
+      express.realEstimate = true;
+    }
   }
 
-  return mockShippingOptions(input);
+  return options;
 }
 
 function mockShippingOptions(input: ShippingQuoteInput): ShippingOption[] {
