@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { getCurrentAdmin } from "@/lib/auth/admin-session";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 
 export default async function AdminLoginPage({
@@ -6,6 +8,12 @@ export default async function AdminLoginPage({
   params: Promise<{ companySlug: string }>;
 }) {
   const { companySlug } = await params;
+
+  // Sessão já válida (ex.: usuário voltou pra /login pelo histórico do
+  // navegador) -- manda direto pro dashboard em vez de deixar o layout
+  // renderizar o AdminShell autenticado por cima do formulário de login.
+  const admin = await getCurrentAdmin();
+  if (admin) redirect(`/admin/${admin.companySlug}`);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">

@@ -37,7 +37,13 @@ export async function adminLoginAction(_prev: ActionResult, formData: FormData):
   await createAdminSession(admin);
   await logAudit({ adminId: admin.id, action: "admin.login" });
 
-  return { success: true };
+  // Redirect no servidor (mesmo padrão de adminLogoutAction) em vez de
+  // devolver { success: true } e deixar o cliente navegar via router.push —
+  // essa navegação client-side corria contra o router.refresh() logo em
+  // seguida e podia perder a corrida, deixando a URL voltar para /login
+  // mesmo com a sessão já válida (o sidebar autenticado aparecia por cima
+  // do formulário de login). redirect() aqui é determinístico.
+  redirect(`/admin/${companySlug}`);
 }
 
 export async function adminLogoutAction(companySlug: string) {

@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,16 +8,11 @@ import { adminLoginAction, type ActionResult } from "@/actions/admin-auth.action
 
 const initialState: ActionResult = { success: false };
 
+// Login bem-sucedido é tratado inteiramente no servidor: adminLoginAction
+// chama redirect() após criar a sessão, então esta action só "retorna" (com
+// success: false) no caminho de erro — não há navegação client-side aqui.
 export function AdminLoginForm({ companySlug }: { companySlug: string }) {
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(adminLoginAction, initialState);
-
-  useEffect(() => {
-    if (state.success) {
-      router.push(`/admin/${companySlug}`);
-      router.refresh();
-    }
-  }, [state, router, companySlug]);
 
   return (
     <form action={formAction} className="space-y-4">
