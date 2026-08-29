@@ -153,10 +153,10 @@ enum PlatformRole {
 
 model AdminUser {
   id           String    @id @default(cuid())
-  companyId    String?
-  company      Company?  @relation(fields: [companyId], references: [id])
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id])
   name         String
-  email        String    @unique
+  email        String
   passwordHash String
   role         AdminRole @default(OPERADOR)
   permissions  String[]  @default([])
@@ -168,6 +168,7 @@ model AdminUser {
 
   auditLogs AuditLog[]
 
+  @@unique([companyId, email])
   @@index([email])
   @@index([companyId])
 }
@@ -178,12 +179,12 @@ model AdminUser {
 
 model User {
   id                String    @id @default(cuid())
-  companyId         String?
-  company           Company?  @relation(fields: [companyId], references: [id])
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id])
   firstName         String
   lastName          String
   fullName          String
-  email             String    @unique
+  email             String
   phone             String?
   document          String? // CPF/CNPJ
   birthDate         DateTime?
@@ -214,6 +215,7 @@ model User {
   auditLogs           AuditLog[]
   dataRequests        DataRequest[]
 
+  @@unique([companyId, email])
   @@index([email])
   @@index([document])
   @@index([createdAt])
@@ -278,10 +280,10 @@ model Address {
 
 model Category {
   id              String     @id @default(cuid())
-  companyId       String?
-  company         Company?   @relation(fields: [companyId], references: [id])
+  companyId       String
+  company         Company   @relation(fields: [companyId], references: [id])
   name            String
-  slug            String     @unique
+  slug            String
   description     String?
   imageUrl        String?
   seoTitle        String?
@@ -296,6 +298,7 @@ model Category {
 
   products Product[]
 
+  @@unique([companyId, slug])
   @@index([slug])
   @@index([parentId])
   @@index([companyId])
@@ -303,10 +306,10 @@ model Category {
 
 model Brand {
   id          String   @id @default(cuid())
-  companyId   String?
-  company     Company? @relation(fields: [companyId], references: [id])
+  companyId   String
+  company     Company @relation(fields: [companyId], references: [id])
   name        String
-  slug        String   @unique
+  slug        String
   logoUrl     String?
   description String?
   website     String?
@@ -316,17 +319,18 @@ model Brand {
 
   products Product[]
 
+  @@unique([companyId, slug])
   @@index([slug])
   @@index([companyId])
 }
 
 model Product {
   id               String        @id @default(cuid())
-  companyId        String?
-  company          Company?      @relation(fields: [companyId], references: [id])
+  companyId        String
+  company          Company      @relation(fields: [companyId], references: [id])
   name             String
-  slug             String        @unique
-  sku              String        @unique
+  slug             String
+  sku              String
   shortDescription String?
   description      String?
   price            Decimal       @db.Decimal(10, 2)
@@ -364,6 +368,8 @@ model Product {
   reviews          Review[]
   inventoryMoves   InventoryMovement[]
 
+  @@unique([companyId, slug])
+  @@unique([companyId, sku])
   @@index([slug])
   @@index([sku])
   @@index([status])
@@ -389,11 +395,11 @@ model ProductImage {
 
 model ProductVariant {
   id             String   @id @default(cuid())
-  companyId      String?
-  company        Company? @relation(fields: [companyId], references: [id])
+  companyId      String
+  company        Company @relation(fields: [companyId], references: [id])
   productId      String
   product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku            String   @unique
+  sku            String
   name           String // e.g. "Azul / M"
   options        Json // { color: "Azul", size: "M" }
   price          Decimal? @db.Decimal(10, 2) // overrides product price when set
@@ -411,6 +417,7 @@ model ProductVariant {
   orderItems     OrderItem[]
   inventoryMoves InventoryMovement[]
 
+  @@unique([companyId, sku])
   @@index([productId])
   @@index([sku])
   @@index([companyId])
@@ -466,9 +473,9 @@ model WishlistItem {
 
 model Coupon {
   id                 String       @id @default(cuid())
-  companyId          String?
-  company            Company?     @relation(fields: [companyId], references: [id])
-  code               String       @unique
+  companyId          String
+  company            Company     @relation(fields: [companyId], references: [id])
+  code               String
   description        String?
   type               DiscountType
   value              Decimal      @db.Decimal(10, 2) // percentage or fixed amount
@@ -489,6 +496,7 @@ model Coupon {
   carts  Cart[]
   orders Order[]
 
+  @@unique([companyId, code])
   @@index([code])
   @@index([status])
   @@index([companyId])
@@ -514,9 +522,9 @@ model CouponUsage {
 
 model Order {
   id              String      @id @default(cuid())
-  companyId       String?
-  company         Company?    @relation(fields: [companyId], references: [id])
-  orderNumber     String      @unique
+  companyId       String
+  company         Company    @relation(fields: [companyId], references: [id])
+  orderNumber     String
   userId          String
   user            User        @relation(fields: [userId], references: [id])
   addressId       String?
@@ -551,6 +559,7 @@ model Order {
   cancellationRequests CancellationRequest[]
   reviews              Review[]
 
+  @@unique([companyId, orderNumber])
   @@index([orderNumber])
   @@index([userId])
   @@index([status])
@@ -654,8 +663,8 @@ model WebhookEvent {
 
 model InventoryMovement {
   id          String                 @id @default(cuid())
-  companyId   String?
-  company     Company?               @relation(fields: [companyId], references: [id])
+  companyId   String
+  company     Company               @relation(fields: [companyId], references: [id])
   productId   String
   product     Product                @relation(fields: [productId], references: [id], onDelete: Cascade)
   variantId   String?
@@ -681,8 +690,8 @@ model InventoryMovement {
 
 model Review {
   id        String       @id @default(cuid())
-  companyId String?
-  company   Company?     @relation(fields: [companyId], references: [id])
+  companyId String
+  company   Company     @relation(fields: [companyId], references: [id])
   productId String
   product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId    String
@@ -711,8 +720,8 @@ model Review {
 
 model Banner {
   id             String    @id @default(cuid())
-  companyId      String?
-  company        Company?  @relation(fields: [companyId], references: [id])
+  companyId      String
+  company        Company  @relation(fields: [companyId], references: [id])
   title          String
   subtitle       String?
   imageUrlDesktop String
@@ -734,9 +743,9 @@ model Banner {
 
 model Page {
   id        String   @id @default(cuid())
-  companyId String?
-  company   Company? @relation(fields: [companyId], references: [id])
-  slug      String   @unique // about, contact, terms, privacy, returns, shipping, faq
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+  slug      String // about, contact, terms, privacy, returns, shipping, faq
   title     String
   content   String // HTML/Markdown content
   seoTitle  String?
@@ -745,19 +754,21 @@ model Page {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, slug])
   @@index([slug])
   @@index([companyId])
 }
 
 model Setting {
   id        String   @id @default(cuid())
-  companyId String?
-  company   Company? @relation(fields: [companyId], references: [id])
-  key       String   @unique
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+  key       String
   value     Json
   group     String   @default("general") // store, social, checkout, payments, emails
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, key])
   @@index([group])
   @@index([companyId])
 }
@@ -768,8 +779,8 @@ model Setting {
 
 model Notification {
   id        String           @id @default(cuid())
-  companyId String?
-  company   Company?         @relation(fields: [companyId], references: [id])
+  companyId String
+  company   Company         @relation(fields: [companyId], references: [id])
   userId    String?
   user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   type      NotificationType
@@ -820,8 +831,8 @@ model DataRequest {
 
 model AuditLog {
   id         String     @id @default(cuid())
-  companyId  String?
-  company    Company?   @relation(fields: [companyId], references: [id])
+  companyId  String
+  company    Company   @relation(fields: [companyId], references: [id])
   userId     String?
   user       User?      @relation(fields: [userId], references: [id])
   adminId    String?
