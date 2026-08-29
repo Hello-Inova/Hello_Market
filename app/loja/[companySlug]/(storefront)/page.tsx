@@ -94,12 +94,12 @@ export default async function HomePage({
       {categories.length > 0 && (
         <section className="container-page mt-10">
           <h2 className="mb-4 text-xl font-bold">Categorias</h2>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-8">
+          <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
             {categories.map((c) => (
               <Link
                 key={c.id}
                 href={`${base}/produtos?categoria=${c.slug}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border p-3 text-center transition-colors hover:border-primary"
+                className="group flex w-[calc(33.333%-8px)] flex-col items-center gap-2 rounded-xl border p-3 text-center transition-colors hover:border-primary sm:w-[calc(25%-9px)] md:w-[calc(12.5%-10.5px)]"
               >
                 <div className="relative h-14 w-14 overflow-hidden rounded-full bg-secondary">
                   {c.imageUrl && (
