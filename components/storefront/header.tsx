@@ -142,47 +142,65 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
       </nav>
 
       {mobileOpen && (
-        <div className="md:hidden border-t bg-white p-4 space-y-4">
-          <form onSubmit={handleSearch}>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar..."
-                className="pl-9 rounded-full"
-              />
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div className="flex w-72 max-w-[80vw] flex-col overflow-y-auto bg-white p-4 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt={storeName} className="h-8 w-auto" />
+              ) : (
+                <span className="text-lg font-bold text-primary">{storeName}</span>
+              )}
+              <button onClick={() => setMobileOpen(false)} aria-label="Fechar menu">
+                <X className="h-5 w-5" />
+              </button>
             </div>
-          </form>
-          <div className="flex flex-col gap-3 text-sm">
-            {categories.map((c) => (
-              <Link
-                key={c.slug}
-                href={`${base}/produtos?categoria=${c.slug}`}
-                onClick={() => setMobileOpen(false)}
-                className="text-foreground"
-              >
-                {c.name}
+
+            <form onSubmit={handleSearch} className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Buscar..."
+                  className="pl-9 rounded-full"
+                />
+              </div>
+            </form>
+
+            <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Categorias</p>
+            <div className="flex flex-col gap-3 text-sm">
+              {categories.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`${base}/produtos?categoria=${c.slug}`}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-foreground"
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 border-t pt-3 text-sm">
+              <Link href={base} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 font-medium text-primary">
+                <Home className="h-4 w-4" /> Home Site
               </Link>
-            ))}
+              {user ? (
+                <>
+                  <Link href={`${base}/minha-conta`} onClick={() => setMobileOpen(false)}>Minha conta</Link>
+                  <Link href={`${base}/minha-conta/pedidos`} onClick={() => setMobileOpen(false)}>Meus pedidos</Link>
+                  <Link href={`${base}/minha-conta/favoritos`} onClick={() => setMobileOpen(false)}>Favoritos</Link>
+                </>
+              ) : (
+                <>
+                  <Link href={`${base}/entrar`} onClick={() => setMobileOpen(false)}>Entrar</Link>
+                  <Link href={`${base}/cadastro`} onClick={() => setMobileOpen(false)}>Criar conta</Link>
+                </>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-3 border-t pt-3 text-sm">
-            <Link href={base} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 font-medium text-primary">
-              <Home className="h-4 w-4" /> Home Site
-            </Link>
-            {user ? (
-              <>
-                <Link href={`${base}/minha-conta`} onClick={() => setMobileOpen(false)}>Minha conta</Link>
-                <Link href={`${base}/minha-conta/pedidos`} onClick={() => setMobileOpen(false)}>Meus pedidos</Link>
-                <Link href={`${base}/minha-conta/favoritos`} onClick={() => setMobileOpen(false)}>Favoritos</Link>
-              </>
-            ) : (
-              <>
-                <Link href={`${base}/entrar`} onClick={() => setMobileOpen(false)}>Entrar</Link>
-                <Link href={`${base}/cadastro`} onClick={() => setMobileOpen(false)}>Criar conta</Link>
-              </>
-            )}
-          </div>
+          <div className="flex-1 bg-black/50" onClick={() => setMobileOpen(false)} />
         </div>
       )}
     </header>
