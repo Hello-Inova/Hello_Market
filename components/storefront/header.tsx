@@ -39,6 +39,7 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
   }
 
   return (
+    <>
     <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur">
       <div className="container-page flex h-16 items-center gap-4">
         <button
@@ -140,8 +141,15 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
           ))}
         </div>
       </nav>
+    </header>
 
-      {mobileOpen && (
+    {/* Fora do <header> de propósito: o header usa backdrop-blur
+        (backdrop-filter), que cria um "containing block" para
+        descendentes com position:fixed — um <div className="fixed
+        inset-0"> preso dentro do header ficava limitado à altura do
+        header (64px) em vez de cobrir a tela inteira. Como irmão do
+        header, o inset-0 se posiciona corretamente contra a viewport. */}
+    {mobileOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="flex w-72 max-w-[80vw] flex-col overflow-y-auto bg-white p-4 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
@@ -203,6 +211,6 @@ export function Header({ user, cartCount, categories, storeName, logoUrl }: Head
           <div className="flex-1 bg-black/50" onClick={() => setMobileOpen(false)} />
         </div>
       )}
-    </header>
+    </>
   );
 }
