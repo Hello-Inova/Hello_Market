@@ -53,7 +53,7 @@ export function ProfileForm({ user }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="firstName">Nome</Label>
           <Input id="firstName" name="firstName" defaultValue={user.firstName} required />
@@ -72,7 +72,7 @@ export function ProfileForm({ user }: Props) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="document">CPF/CNPJ</Label>
           <Input id="document" name="document" defaultValue={user.document ? formatCpfCnpj(user.document) : ""} />

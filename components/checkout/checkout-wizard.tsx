@@ -163,19 +163,19 @@ export function CheckoutWizard({
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
       <div>
-        <ol className="mb-8 flex items-center gap-2 text-xs sm:text-sm">
+        <ol className="mb-8 flex items-center gap-1 overflow-x-auto text-xs sm:gap-2 sm:text-sm">
           {STEPS.map((label, idx) => (
-            <li key={label} className="flex items-center gap-2">
+            <li key={label} className="flex shrink-0 items-center gap-1.5 sm:gap-2">
               <span
                 className={cn(
-                  "flex h-6 w-6 items-center justify-center rounded-full border text-xs font-semibold",
+                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold",
                   idx === step ? "border-primary bg-primary text-white" : idx < step ? "border-primary text-primary" : "text-muted-foreground"
                 )}
               >
                 {idx < step ? <Check className="h-3.5 w-3.5" /> : idx + 1}
               </span>
-              <span className={idx === step ? "font-medium" : "text-muted-foreground"}>{label}</span>
-              {idx < STEPS.length - 1 && <span className="mx-1 h-px w-4 bg-border sm:w-8" />}
+              <span className={cn("hidden whitespace-nowrap sm:inline", idx === step ? "font-medium" : "text-muted-foreground")}>{label}</span>
+              {idx < STEPS.length - 1 && <span className="mx-1 h-px w-4 shrink-0 bg-border sm:w-8" />}
             </li>
           ))}
         </ol>
@@ -216,20 +216,20 @@ export function CheckoutWizard({
               </Button>
             ) : (
               <form action={handleAddressSubmit} className="space-y-3 rounded-xl border p-4">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <TextField label="Nome do endereço" name="label" required placeholder="Casa, Trabalho..." />
                   <TextField label="Destinatário" name="recipient" required />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <TextField label="CEP" name="zipCode" required placeholder="00000-000" />
                   <TextField label="Número" name="number" required />
                 </div>
                 <TextField label="Rua" name="street" required />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <TextField label="Bairro" name="neighborhood" required />
                   <TextField label="Complemento" name="complement" />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <TextField label="Cidade" name="city" required />
                   <TextField label="Estado (UF)" name="state" required maxLength={2} placeholder="SP" />
                 </div>
@@ -243,7 +243,7 @@ export function CheckoutWizard({
               </form>
             )}
 
-            <Button size="lg" onClick={goToShipping} disabled={isPending || !addressId}>
+            <Button size="lg" className="w-full sm:w-auto" onClick={goToShipping} disabled={isPending || !addressId}>
               Continuar para entrega
             </Button>
           </div>
@@ -266,9 +266,9 @@ export function CheckoutWizard({
                 </label>
               ))}
             </RadioGroup>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep(0)}>Voltar</Button>
-              <Button onClick={() => setStep(2)} disabled={!shippingMethodId}>Continuar para pagamento</Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button variant="outline" className="w-full sm:w-auto" onClick={() => setStep(0)}>Voltar</Button>
+              <Button className="w-full sm:w-auto" onClick={() => setStep(2)} disabled={!shippingMethodId}>Continuar para pagamento</Button>
             </div>
           </div>
         )}
@@ -320,9 +320,9 @@ export function CheckoutWizard({
               </div>
             )}
 
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep(1)}>Voltar</Button>
-              <Button onClick={() => setStep(3)}>Revisar pedido</Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button variant="outline" className="w-full sm:w-auto" onClick={() => setStep(1)}>Voltar</Button>
+              <Button className="w-full sm:w-auto" onClick={() => setStep(3)}>Revisar pedido</Button>
             </div>
           </div>
         )}
@@ -335,9 +335,9 @@ export function CheckoutWizard({
               <p><strong>Entrega:</strong> {selectedShipping?.name} ({selectedShipping?.days} dias)</p>
               <p><strong>Pagamento:</strong> {paymentMethod === "PIX" ? "PIX" : paymentMethod === "BOLETO" ? "Boleto" : `Cartão em ${installments}x`}</p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep(2)}>Voltar</Button>
-              <Button onClick={handleSubmitOrder} disabled={isPending} size="lg">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button variant="outline" className="w-full sm:w-auto" onClick={() => setStep(2)}>Voltar</Button>
+              <Button onClick={handleSubmitOrder} disabled={isPending} size="lg" className="w-full sm:w-auto">
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Finalizar pedido"}
               </Button>
             </div>

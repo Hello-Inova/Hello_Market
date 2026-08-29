@@ -90,20 +90,20 @@ export function AddressManager({ addresses }: { addresses: AddressData[] }) {
             <DialogTitle>{editing ? "Editar endereço" : "Novo endereço"}</DialogTitle>
           </DialogHeader>
           <form action={handleSubmit} className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label="Nome do endereço" name="label" defaultValue={editing?.label} required />
               <Field label="Destinatário" name="recipient" defaultValue={editing?.recipient} required />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label="CEP" name="zipCode" defaultValue={editing?.zipCode} required />
               <Field label="Número" name="number" defaultValue={editing?.number} required />
             </div>
             <Field label="Rua" name="street" defaultValue={editing?.street} required />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label="Bairro" name="neighborhood" defaultValue={editing?.neighborhood} required />
               <Field label="Complemento" name="complement" defaultValue={editing?.complement ?? ""} />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label="Cidade" name="city" defaultValue={editing?.city} required />
               <Field label="Estado (UF)" name="state" defaultValue={editing?.state} maxLength={2} required />
             </div>

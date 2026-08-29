@@ -48,17 +48,17 @@ export function RegisterForm() {
 
       <input ref={guestCartRef} type="hidden" name="guestCart" defaultValue="" />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label="Nome" name="firstName" error={err.firstName} required />
         <Field label="Sobrenome" name="lastName" error={err.lastName} required />
       </div>
       <Field label="E-mail" name="email" type="email" error={err.email} required />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label="Telefone" name="phone" placeholder="(11) 91234-5678" error={err.phone} />
         <Field label="CPF/CNPJ" name="document" placeholder="000.000.000-00" error={err.document} />
       </div>
       <Field label="Data de nascimento" name="birthDate" type="date" error={err.birthDate} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Field label="Senha" name="password" type="password" error={err.password} required />
         <Field label="Confirmar senha" name="confirmPassword" type="password" error={err.confirmPassword} required />
       </div>
