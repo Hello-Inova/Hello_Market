@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, CreditCard, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, Building2, CreditCard, User, LogOut, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { platformLogoutAction } from "@/actions/platform-auth.actions";
 
@@ -11,6 +11,7 @@ const NAV = [
   { href: "/plataforma", label: "Dashboard", icon: LayoutDashboard },
   { href: "/plataforma/empresas", label: "Empresas", icon: Building2 },
   { href: "/plataforma/assinaturas", label: "Assinaturas", icon: CreditCard },
+  { href: "/plataforma/perfil", label: "Perfil", icon: User },
 ];
 
 export function PlatformShell({
@@ -50,10 +51,10 @@ export function PlatformShell({
         })}
       </nav>
       <div className="border-t border-zinc-800 p-3">
-        <div className="mb-2 px-1">
+        <Link href="/plataforma/perfil" onClick={() => setMobileOpen(false)} className="mb-2 block rounded-lg px-1 py-1 hover:bg-zinc-800">
           <p className="truncate text-sm font-medium text-white">{admin.name}</p>
           <p className="truncate text-xs text-zinc-500">{admin.role === "OWNER" ? "Proprietário" : "Equipe"}</p>
-        </div>
+        </Link>
         <form action={platformLogoutAction}>
           <button
             type="submit"

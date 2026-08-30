@@ -72,3 +72,23 @@ export const updateCompanyThemeSchema = updateCompanySchema.pick({
 });
 
 export type UpdateCompanyThemeInput = z.infer<typeof updateCompanyThemeSchema>;
+
+// Troca de senha do PlatformAdmin — mesmo formato de schemas/auth.schema.ts
+// (changePasswordSchema), usado pelo cliente final na loja.
+export const changePlatformPasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Informe a senha atual"),
+    newPassword: z
+      .string()
+      .min(8, "A senha deve ter no mínimo 8 caracteres")
+      .regex(/[a-z]/, "A senha deve conter uma letra minúscula")
+      .regex(/[A-Z]/, "A senha deve conter uma letra maiúscula")
+      .regex(/[0-9]/, "A senha deve conter um número"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePlatformPasswordInput = z.infer<typeof changePlatformPasswordSchema>;

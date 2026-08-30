@@ -2,8 +2,13 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { verifyPassword } from "@/lib/auth/password";
-import { createPlatformSession, destroyPlatformSession } from "@/lib/auth/platform-session";
+import { verifyPassword, hashPassword } from "@/lib/auth/password";
+import {
+  createPlatformSession,
+  destroyPlatformSession,
+  requirePlatformAdmin,
+} from "@/lib/auth/platform-session";
+import { changePlatformPasswordSchema } from "@/schemas/platform.schema";
 
 // Nota: lib/audit.ts (logAudit) grava em AuditLog, que é um modelo com
 // escopo de empresa (companyId obrigatório) — pensado para ações dentro de
@@ -44,4 +49,24 @@ export async function platformLoginAction(
 export async function platformLogoutAction() {
   await destroyPlatformSession();
   redirect("/plataforma/login");
+}
+
+export async function changePlatformPasswordAction(
+  _prev: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const admin = await requirePlatformAdmin();
+
+  const parsed = changePlatformPasswordSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
+  const valid = await verifyPassword(parsed.data.currentPassword, admin.passwordHash);
+  if (!valid) return { success: false, message: "Senha atual incorreta." };
+
+  const passwordHash = await hashPassword(parsed.data.newPassword);
+  await prisma.platformAdmin.update({ where: { id: admin.id }, data: { passwordHash } });
+
+  return { success: true, message: "Senha alterada com sucesso." };
 }
