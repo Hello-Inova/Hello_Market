@@ -102,14 +102,15 @@ export function AccountNav({ base, userName, userEmail }: AccountNavProps) {
 
   return (
     <>
-      {/* md:self-start impede o <aside> de esticar até a altura do
-          conteúdo da direita (comportamento padrão de grid/flex stretch)
-          — sem isso ele fica do tamanho da página inteira e o sticky não
-          tem espaço de rolagem próprio para "flutuar". Com self-start ele
-          fica só do tamanho do próprio conteúdo e md:sticky o mantém
-          visível enquanto a coluna da direita (pedidos, endereços etc.)
-          rola por baixo. */}
-      <aside className="hidden md:sticky md:top-6 md:block md:self-start">
+      {/* Pedido do usuário: o menu deve ficar fixado na própria borda
+          esquerda da TELA (viewport), sem a faixa em branco que sobrava
+          quando ele era só uma coluna de grid dentro do container
+          centralizado (container-page tem max-width). Por isso agora é
+          `fixed inset-y-0 left-0` (ancorado à viewport, altura cheia,
+          igual ao menu do painel admin) em vez de `sticky` dentro do
+          grid — e o conteúdo ao lado ganha `md:pl-64` (mesma largura do
+          aside, w-64) em (account)/layout.tsx para não ficar embaixo dele. */}
+      <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:z-30 md:flex md:w-64 md:flex-col md:overflow-y-auto md:border-r md:bg-card md:p-4">
         <div className="mb-4 rounded-xl border p-4">
           <p className="font-medium">{userName}</p>
           <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
@@ -119,7 +120,7 @@ export function AccountNav({ base, userName, userEmail }: AccountNavProps) {
 
       <button
         onClick={() => setMobileOpen(true)}
-        className="mb-4 flex w-full items-center gap-2 rounded-xl border p-3 text-sm font-medium md:hidden"
+        className="container-page mb-4 flex w-full items-center gap-2 rounded-xl border p-3 text-sm font-medium md:hidden"
         aria-label="Abrir menu da conta"
       >
         <Menu className="h-4 w-4" /> Menu da conta
