@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { CreditCard, ShieldCheck, Truck } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { ProductCard } from "@/components/storefront/product-card";
 import { NewsletterForm } from "@/components/storefront/newsletter-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export const revalidate = 60;
 
@@ -46,6 +48,12 @@ async function getHomeData() {
   return { banners, featured, bestSellers, newArrivals, onSale, categories, brands };
 }
 
+const BENEFITS = [
+  { icon: Truck, title: "Entrega acompanhada", copy: "Você sabe onde seu pedido está." },
+  { icon: ShieldCheck, title: "Compra protegida", copy: "Transparência em cada etapa." },
+  { icon: CreditCard, title: "Pagamento flexível", copy: "Escolha a condição ideal para você." },
+];
+
 export default async function HomePage({
   params,
 }: {
@@ -57,68 +65,125 @@ export default async function HomePage({
 
   return (
     <div className="pb-16">
-      {/* Hero banners */}
-      {banners.length > 0 && (
-        <section className="container-page pt-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+      <div className="container-page pt-6 md:pt-8">
+        {/* Hero: usa os banners cadastrados quando existirem; sem nenhum
+            banner ativo, mostra uma vitrine de abertura genérica em vez de
+            uma seção vazia — a loja nunca fica "sem cara" antes de a
+            empresa configurar seus banners. */}
+        {banners.length > 0 ? (
+          <section className="grid gap-4 sm:grid-cols-2">
             {banners.slice(0, 2).map((banner, idx) => (
               <Link
                 key={banner.id}
                 href={banner.link || "#"}
-                className={`relative block overflow-hidden rounded-2xl bg-secondary ${idx === 0 ? "sm:col-span-2 aspect-[21/9]" : "aspect-[16/9]"}`}
+                className={`group relative block overflow-hidden rounded-3xl bg-neutral-950 ${idx === 0 ? "sm:col-span-2 aspect-[21/9]" : "aspect-[16/9]"}`}
               >
                 <Image
                   src={banner.imageUrlDesktop}
                   alt={banner.title}
                   fill
                   priority={idx === 0}
-                  className="object-cover"
+                  className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
                   sizes="100vw"
                 />
-                <div className="absolute inset-0 flex flex-col justify-end gap-2 bg-gradient-to-t from-black/60 via-black/0 p-6 text-white">
-                  <h2 className="text-2xl font-bold sm:text-3xl">{banner.title}</h2>
-                  {banner.subtitle && <p className="max-w-md text-sm sm:text-base">{banner.subtitle}</p>}
+                <div className="absolute inset-0 flex flex-col justify-end gap-2 bg-gradient-to-t from-black/70 via-black/10 p-6 text-white md:p-10">
+                  <h2 className="font-serif text-2xl font-bold leading-tight sm:text-3xl">{banner.title}</h2>
+                  {banner.subtitle && <p className="max-w-md text-sm text-white/80 sm:text-base">{banner.subtitle}</p>}
                   {banner.buttonText && (
-                    <span className="mt-2 inline-block w-fit rounded-full bg-white px-4 py-2 text-sm font-semibold text-foreground">
+                    <span className="mt-2 inline-block w-fit rounded-lg bg-white px-4 py-2 text-sm font-bold text-black">
                       {banner.buttonText}
                     </span>
                   )}
                 </div>
               </Link>
             ))}
-          </div>
-        </section>
-      )}
+          </section>
+        ) : (
+          <section className="relative isolate overflow-hidden rounded-3xl bg-neutral-950 py-14 text-white sm:py-20">
+            <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full border border-white/15" />
+            <div className="relative max-w-lg px-6 sm:px-12">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-white/60">Escolhas bem feitas</p>
+              <h1 className="mt-4 font-serif text-3xl font-bold leading-tight sm:text-4xl">
+                Uma forma mais simples de encontrar o que importa.
+              </h1>
+              <p className="mt-5 max-w-md text-white/75">
+                Produtos selecionados para a sua rotina, em uma experiência de compra leve, direta e confiável.
+              </p>
+              <Button asChild size="lg" className="mt-8 rounded-lg bg-white text-black hover:bg-white/90">
+                <Link href="#produtos-em-destaque">Ver seleção</Link>
+              </Button>
+            </div>
+          </section>
+        )}
 
-      {/* Categories */}
+        {/* Faixa de confiança */}
+        <section className="mt-5 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-card sm:grid-cols-3">
+          {BENEFITS.map((b, i) => (
+            <div
+              key={b.title}
+              className={`flex items-center gap-3 px-6 py-5 ${i > 0 ? "border-t border-border sm:border-l sm:border-t-0" : ""}`}
+            >
+              <b.icon className="h-5 w-5 shrink-0 text-foreground" />
+              <div>
+                <p className="text-sm font-bold text-foreground">{b.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{b.copy}</p>
+              </div>
+            </div>
+          ))}
+        </section>
+      </div>
+
+      {/* Categorias */}
       {categories.length > 0 && (
         <section className="container-page mt-10">
-          <h2 className="mb-4 text-xl font-bold">Categorias</h2>
-          <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Navegue por</p>
+          <h2 className="mt-1 font-serif text-xl font-bold text-foreground">Categorias</h2>
+          <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
             {categories.map((c) => (
               <Link
                 key={c.id}
                 href={`${base}/produtos?categoria=${c.slug}`}
-                className="group flex w-[calc(33.333%-8px)] flex-col items-center gap-2 rounded-xl border p-3 text-center transition-colors hover:border-primary sm:w-[calc(25%-9px)] md:w-[calc(12.5%-10.5px)]"
+                className="group flex w-[calc(33.333%-8px)] flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 text-center transition-colors hover:border-foreground sm:w-[calc(25%-9px)] md:w-[calc(12.5%-10.5px)]"
               >
                 <div className="relative h-14 w-14 overflow-hidden rounded-full bg-secondary">
                   {c.imageUrl && (
                     <Image src={c.imageUrl} alt={c.name} fill className="object-cover" sizes="56px" />
                   )}
                 </div>
-                <span className="text-xs font-medium group-hover:text-primary">{c.name}</span>
+                <span className="text-xs font-semibold text-foreground">{c.name}</span>
               </Link>
             ))}
           </div>
         </section>
       )}
 
+      <div id="produtos-em-destaque" />
+
       {featured.length > 0 && (
         <ProductSection title="Destaques" products={featured} viewAllHref={`${base}/produtos?destaque=1`} basePath={base} />
       )}
 
       {onSale.length > 0 && (
-        <ProductSection title="Ofertas" products={onSale} viewAllHref={`${base}/produtos?promocao=1`} badge="OFERTA" basePath={base} />
+        <>
+          <ProductSection title="Ofertas" products={onSale.slice(0, 4)} viewAllHref={`${base}/produtos?promocao=1`} badge="OFERTA" basePath={base} />
+          <section className="container-page mt-10">
+            <div className="relative overflow-hidden rounded-3xl bg-secondary">
+              <div className="pointer-events-none absolute -right-10 -top-20 h-56 w-56 rounded-full border-[32px] border-black/[0.06]" />
+              <div className="relative max-w-xl px-6 py-10 sm:px-12">
+                <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">Seleção da semana</p>
+                <h2 className="mt-3 font-serif text-2xl font-bold leading-tight text-foreground">
+                  Ofertas para levar apenas o essencial.
+                </h2>
+                <p className="mt-4 max-w-md text-muted-foreground">
+                  Descontos pontuais em produtos que combinam funcionalidade, presença e bom design.
+                </p>
+                <Button asChild variant="outline" className="mt-6 rounded-lg bg-card">
+                  <Link href={`${base}/produtos?promocao=1`}>Explorar ofertas</Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+        </>
       )}
 
       {bestSellers.length > 0 && (
@@ -131,13 +196,13 @@ export default async function HomePage({
 
       {brands.length > 0 && (
         <section className="container-page mt-10">
-          <h2 className="mb-4 text-xl font-bold">Marcas</h2>
+          <h2 className="mb-4 font-serif text-xl font-bold text-foreground">Marcas</h2>
           <div className="flex flex-wrap gap-4">
             {brands.map((b) => (
               <Link
                 key={b.id}
                 href={`${base}/produtos?marca=${b.slug}`}
-                className="flex h-16 w-32 items-center justify-center rounded-lg border bg-white p-3 grayscale transition hover:grayscale-0"
+                className="flex h-16 w-32 items-center justify-center rounded-xl border border-border bg-card p-3 grayscale transition hover:grayscale-0"
               >
                 {b.logoUrl ? (
                   <Image src={b.logoUrl} alt={b.name} width={100} height={40} className="max-h-10 w-auto object-contain" />
@@ -151,8 +216,8 @@ export default async function HomePage({
       )}
 
       <section className="container-page mt-14">
-        <div className="rounded-2xl bg-primary/5 p-8 text-center">
-          <h2 className="text-xl font-bold">Receba nossas ofertas em primeira mão</h2>
+        <div className="rounded-3xl border border-border bg-card p-8 text-center sm:p-12">
+          <h2 className="font-serif text-xl font-bold text-foreground">Receba nossas ofertas em primeira mão</h2>
           <p className="mt-1 text-sm text-muted-foreground">Cadastre seu e-mail e receba cupons exclusivos.</p>
           <NewsletterForm />
         </div>
@@ -176,12 +241,12 @@ function ProductSection({
 }) {
   return (
     <section className="container-page mt-10">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-xl font-bold">
+      <div className="mb-4 flex items-end justify-between">
+        <h2 className="flex items-center gap-2 font-serif text-xl font-bold text-foreground">
           {title}
           {badge && <Badge variant="destructive">{badge}</Badge>}
         </h2>
-        <Link href={viewAllHref} className="text-sm font-medium text-primary hover:underline">
+        <Link href={viewAllHref} className="text-sm font-semibold text-foreground underline-offset-4 hover:underline">
           Ver tudo
         </Link>
       </div>

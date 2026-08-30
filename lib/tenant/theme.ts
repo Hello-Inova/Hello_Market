@@ -27,3 +27,32 @@ export function companyThemeStyle(theme: CompanyTheme): string {
   --font-sans-active: var(${font.cssVar});
 }`;
 }
+
+/**
+ * Baseline visual do redesign da vitrine (agosto/2026) — paleta neutra
+ * preto/branco/cinza, aplicada só dentro de app/loja/[companySlug]/(storefront)
+ * (a home e as páginas de catálogo), sem tocar em app/globals.css :root (que
+ * também serve o admin e a plataforma, fora do escopo deste redesign).
+ *
+ * De propósito, este bloco NÃO sobrescreve --primary, --secondary nem
+ * --foreground — esses três continuam exclusivamente sob controle de
+ * companyThemeStyle() acima (a cor de marca de cada empresa, definida em
+ * Configurações → Aparência). Só os tokens "estruturais" (fundo, bordas,
+ * tons neutros) que hoje não são configuráveis por empresa mudam aqui.
+ * Renderizado depois do <style> de companyThemeStyle() na árvore do
+ * documento (layout de loja → layout de storefront), então vence por ordem
+ * de aparição só nos tokens que realmente toca — sem conflito com a cor da
+ * empresa.
+ */
+export function storefrontThemeStyle(): string {
+  return `:root {
+  --background: #f6f6f6;
+  --border: #dedede;
+  --input: #dedede;
+  --muted: #eeeeee;
+  --muted-foreground: #767676;
+  --accent: #f2f2f2;
+  --accent-foreground: #18181b;
+  --ring: #18181b;
+}`;
+}

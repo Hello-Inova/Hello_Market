@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { getCartWithDetails } from "@/services/cart.service";
 import { getStoreSettings } from "@/services/settings.service";
 import { prisma } from "@/lib/db";
+import { storefrontThemeStyle } from "@/lib/tenant/theme";
 
 export default async function StorefrontLayout({
   children,
@@ -29,6 +30,9 @@ export default async function StorefrontLayout({
 
   return (
     <>
+      {/* Redesign da vitrine (ago/2026) — ver storefrontThemeStyle() para o
+          porquê deste <style> não mexer nas cores de marca da empresa. */}
+      <style>{storefrontThemeStyle()}</style>
       <Header
         user={user ? { fullName: user.fullName, email: user.email } : null}
         cartCount={cartCount}

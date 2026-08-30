@@ -25,22 +25,22 @@ export function ProductCard({ product, basePath }: { product: ProductCardData; b
   return (
     <Link
       href={`${basePath}/produto/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,0.10)]"
     >
-      <div className="relative aspect-square w-full overflow-hidden bg-secondary">
+      <div className="relative aspect-[1/0.9] w-full overflow-hidden bg-secondary">
         {image ? (
           <Image
             src={image.url}
             alt={image.altText || product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.045]"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-muted-foreground">Sem imagem</div>
         )}
         {discountPct && (
-          <Badge variant="destructive" className="absolute left-2 top-2">
+          <Badge variant="destructive" className="absolute left-2 top-2 rounded-md">
             -{discountPct}%
           </Badge>
         )}
@@ -50,21 +50,21 @@ export function ProductCard({ product, basePath }: { product: ProductCardData; b
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        <h3 className="line-clamp-2 text-sm font-medium text-foreground">{product.name}</h3>
+      <div className="flex flex-1 flex-col gap-1 p-4">
+        <h3 className="line-clamp-2 text-[15px] font-bold leading-5 text-foreground">{product.name}</h3>
         {product.reviewCount > 0 && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
             {Number(product.avgRating).toFixed(1)} ({product.reviewCount})
           </div>
         )}
-        <div className="mt-auto pt-1">
+        <div className="mt-auto pt-2">
           {compareAt && compareAt > price && (
             <span className="block text-xs text-muted-foreground line-through">
               {formatCurrency(compareAt)}
             </span>
           )}
-          <span className="text-lg font-bold text-foreground">{formatCurrency(price)}</span>
+          <span className="text-lg font-bold tracking-tight text-foreground">{formatCurrency(price)}</span>
           <span className="block text-xs text-muted-foreground">
             até 12x de {formatCurrency(price / 12)}
           </span>

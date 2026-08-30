@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Inter, Poppins, Roboto, Montserrat, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Poppins, Roboto, Montserrat, Playfair_Display, DM_Sans, Libre_Baskerville } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -18,8 +18,15 @@ const poppins = Poppins({ variable: "--font-poppins", subsets: ["latin"], weight
 const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: ["400", "500", "700"] });
 const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] });
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
+// DM Sans entra na lista curada (selecionável por empresa em Configurações
+// → Aparência, igual às demais). Libre Baskerville NÃO é selecionável por
+// empresa — é a serifada fixa do novo redesign da vitrine (ver --font-serif
+// em globals.css), usada só em títulos, independente da fonte de corpo que
+// cada empresa escolher.
+const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const libreBaskerville = Libre_Baskerville({ variable: "--font-libre-baskerville", subsets: ["latin"], weight: ["400", "700"] });
 
-const CURATED_FONT_VARIABLES = [geistSans, geistMono, inter, poppins, roboto, montserrat, playfair]
+const CURATED_FONT_VARIABLES = [geistSans, geistMono, inter, poppins, roboto, montserrat, playfair, dmSans, libreBaskerville]
   .map((f) => f.variable)
   .join(" ");
 

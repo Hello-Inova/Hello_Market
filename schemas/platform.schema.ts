@@ -33,6 +33,7 @@ const hexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/, "Use um hexadecimal váli
 // escolhido para cada empresa.
 export const CURATED_FONTS = [
   { value: "geist", label: "Geist (padrão)", cssVar: "--font-geist-sans" },
+  { value: "dm-sans", label: "DM Sans", cssVar: "--font-dm-sans" },
   { value: "inter", label: "Inter", cssVar: "--font-inter" },
   { value: "poppins", label: "Poppins", cssVar: "--font-poppins" },
   { value: "roboto", label: "Roboto", cssVar: "--font-roboto" },

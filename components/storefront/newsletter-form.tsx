@@ -24,10 +24,10 @@ export function NewsletterForm() {
           }
         });
       }}
-      className="mx-auto mt-4 flex max-w-md gap-2"
+      className="mx-auto mt-5 flex max-w-md flex-col gap-2 sm:flex-row"
     >
-      <Input type="email" name="email" placeholder="seu@email.com" required className="bg-white" />
-      <Button type="submit" disabled={isPending}>
+      <Input type="email" name="email" placeholder="seu@email.com" required className="rounded-full bg-background" />
+      <Button type="submit" disabled={isPending} className="rounded-full">
         {isPending ? "Enviando..." : "Inscrever"}
       </Button>
     </form>

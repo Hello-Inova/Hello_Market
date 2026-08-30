@@ -38,75 +38,100 @@ interface FooterProps {
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string };
 }
 
+// Fundo escuro fixo (não segue --primary/--secondary da empresa) — o
+// contraste com uma cor de marca qualquer é imprevisível, então o rodapé do
+// redesign usa um preto neutro sempre, com --primary só como um toque de
+// destaque nos links/ícones sociais (ver comentário em storefrontThemeStyle).
 export function Footer({ storeName, companySlug, email, phone, address, social }: FooterProps) {
   const base = `/loja/${companySlug}`;
   return (
-    <footer className="mt-16 border-t bg-secondary/40">
-    <div className="container-page grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
-  <div>
-  <h3 className="mb-3 text-lg font-bold text-primary">{storeName}</h3>
-  <p className="text-sm text-muted-foreground">
-  Sua loja online completa: milhares de produtos, entrega rápida e pagamento seguro.
-    </p>
-  <div className="mt-4 flex gap-3">
-  {social?.instagram && (
-    <a href={social.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
-    <Instagram className="h-5 w-5 text-muted-foreground hover:text-primary" />
-   </a>
-   )}
-  {social?.facebook && (
-    <a href={social.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
-    <Facebook className="h-5 w-5 text-muted-foreground hover:text-primary" />
-   </a>
-   )}
-  {social?.youtube && (
-    <a href={social.youtube} target="_blank" rel="noreferrer" aria-label="YouTube">
-    <Youtube className="h-5 w-5 text-muted-foreground hover:text-primary" />
-   </a>
-   )}
-  </div>
-  </div>
+    <footer className="mt-16 bg-neutral-950 text-white">
+      <div className="container-page grid grid-cols-2 gap-10 py-12 md:grid-cols-4 md:py-16">
+        <div className="col-span-2 md:col-span-1">
+          <h3 className="font-serif text-xl font-bold tracking-tight">{storeName}</h3>
+          <p className="mt-3 max-w-xs text-sm leading-6 text-white/60">
+            Sua loja online completa: milhares de produtos, entrega rápida e pagamento seguro.
+          </p>
+          <div className="mt-5 flex gap-2">
+            {social?.instagram && (
+              <a
+                href={social.instagram}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white hover:text-white"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            )}
+            {social?.facebook && (
+              <a
+                href={social.facebook}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white hover:text-white"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+            )}
+            {social?.youtube && (
+              <a
+                href={social.youtube}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="YouTube"
+                className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white hover:text-white"
+              >
+                <Youtube className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        </div>
 
-<div>
-  <h4 className="mb-3 text-sm font-semibold">Institucional</h4>
-  <ul className="space-y-2 text-sm text-muted-foreground">
-  <li><Link href={`${base}/paginas/sobre`} className="hover:text-primary">Sobre nós</Link></li>
-  <li><Link href={`${base}/paginas/contato`} className="hover:text-primary">Contato</Link></li>
-  <li><Link href={`${base}/paginas/trocas`} className="hover:text-primary">Trocas e devoluções</Link></li>
-  <li><Link href={`${base}/paginas/entregas`} className="hover:text-primary">Entregas</Link></li>
-  <li><Link href={`${base}/paginas/faq`} className="hover:text-primary">Perguntas frequentes</Link></li>
-  </ul>
-  </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-white/45">Institucional</p>
+          <ul className="mt-4 space-y-3 text-sm text-white/75">
+            <li><Link href={`${base}/paginas/sobre`} className="transition-colors hover:text-white">Sobre nós</Link></li>
+            <li><Link href={`${base}/paginas/contato`} className="transition-colors hover:text-white">Contato</Link></li>
+            <li><Link href={`${base}/paginas/trocas`} className="transition-colors hover:text-white">Trocas e devoluções</Link></li>
+            <li><Link href={`${base}/paginas/entregas`} className="transition-colors hover:text-white">Entregas</Link></li>
+            <li><Link href={`${base}/paginas/faq`} className="transition-colors hover:text-white">Perguntas frequentes</Link></li>
+          </ul>
+        </div>
 
-<div>
-  <h4 className="mb-3 text-sm font-semibold">Sua conta</h4>
-  <ul className="space-y-2 text-sm text-muted-foreground">
-  <li><Link href={`${base}/minha-conta/pedidos`} className="hover:text-primary">Meus pedidos</Link></li>
-  <li><Link href={`${base}/minha-conta/favoritos`} className="hover:text-primary">Favoritos</Link></li>
-  <li><Link href={`${base}/paginas/termos`} className="hover:text-primary">Termos de uso</Link></li>
-  <li><Link href={`${base}/paginas/privacidade`} className="hover:text-primary">Política de privacidade</Link></li>
-  </ul>
-  </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-white/45">Sua conta</p>
+          <ul className="mt-4 space-y-3 text-sm text-white/75">
+            <li><Link href={`${base}/minha-conta/pedidos`} className="transition-colors hover:text-white">Meus pedidos</Link></li>
+            <li><Link href={`${base}/minha-conta/favoritos`} className="transition-colors hover:text-white">Favoritos</Link></li>
+            <li><Link href={`${base}/paginas/termos`} className="transition-colors hover:text-white">Termos de uso</Link></li>
+            <li><Link href={`${base}/paginas/privacidade`} className="transition-colors hover:text-white">Política de privacidade</Link></li>
+          </ul>
+        </div>
 
-<div>
-  <h4 className="mb-3 text-sm font-semibold">Fale conosco</h4>
-  <ul className="space-y-2 text-sm text-muted-foreground">
-  {email && (
-    <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> {email}</li>
-   )}
-  {phone && (
-    <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> {phone}</li>
-   )}
-  {address && (
-    <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0" /> {address}</li>
-   )}
-  </ul>
-  </div>
-  </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-white/45">Fale conosco</p>
+          <ul className="mt-4 space-y-3 text-sm text-white/75">
+            {email && (
+              <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> {email}</li>
+            )}
+            {phone && (
+              <li className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /> {phone}</li>
+            )}
+            {address && (
+              <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> {address}</li>
+            )}
+          </ul>
+        </div>
+      </div>
 
-<div className="border-t py-6 text-center text-xs text-muted-foreground">
-  © {new Date().getFullYear()} {storeName}. Todos os direitos reservados.
-    </div>
-  </footer>
+      <div className="border-t border-white/10 py-6">
+        <div className="container-page flex flex-col justify-between gap-2 text-xs text-white/45 md:flex-row md:items-center">
+          <p>Uma experiência de compra simples e segura.</p>
+          <p>© {new Date().getFullYear()} {storeName}. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
   );
 }
