@@ -14,6 +14,7 @@ export default async function SecurityPage() {
     <div>
       <h1 className="mb-6 text-2xl font-bold">Segurança da conta</h1>
       <SecurityPanel
+        email={user.email}
         sessions={sessions.map((s) => ({
           id: s.id,
           userAgent: s.userAgent,

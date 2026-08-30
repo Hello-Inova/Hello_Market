@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { adminLoginAction, type ActionResult } from "@/actions/admin-auth.actions";
 
@@ -23,7 +24,12 @@ export function AdminLoginForm({ companySlug }: { companySlug: string }) {
       </div>
       <div className="space-y-1.5">
         <Label className="text-zinc-300">Senha</Label>
-        <Input name="password" type="password" required className="border-zinc-700 bg-zinc-800 text-white" />
+        <PasswordInput
+          name="password"
+          required
+          className="border-zinc-700 bg-zinc-800 text-white"
+          toggleClassName="text-zinc-400 hover:text-white"
+        />
       </div>
       {state.message && <p className="text-sm text-red-400">{state.message}</p>}
       <Button type="submit" className="w-full" disabled={isPending}>

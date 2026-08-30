@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { requirePlatformAdmin } from "@/lib/auth/platform-session";
 import { ChangePasswordForm } from "@/components/platform/change-password-form";
+import { ChangeEmailForm } from "@/components/platform/change-email-form";
 
 export const metadata: Metadata = { title: "Perfil — Plataforma" };
 
@@ -16,6 +17,7 @@ export default async function PlatformProfilePage() {
         </p>
       </div>
 
+      <ChangeEmailForm currentEmail={admin.email} />
       <ChangePasswordForm />
     </div>
   );

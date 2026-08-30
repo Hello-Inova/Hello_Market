@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { changePlatformPasswordAction, type ActionResult } from "@/actions/platform-auth.actions";
+import { changeMyPasswordAction, type ActionResult } from "@/actions/admin/user.actions";
 
 const initialState: ActionResult = { success: false };
 
 export function ChangePasswordForm() {
-  const [state, formAction, isPending] = useActionState(changePlatformPasswordAction, initialState);
+  const [state, formAction, isPending] = useActionState(changeMyPasswordAction, initialState);
 
   return (
     <Card>

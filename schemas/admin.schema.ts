@@ -48,6 +48,34 @@ export const adminUserSchema = z.object({
   active: z.boolean().default(true),
 });
 
+// Troca de e-mail em autoatendimento — mesmo padrão de changeEmailSchema em
+// auth.schema.ts, usado pelo cliente final na loja.
+export const changeAdminEmailSchema = z.object({
+  newEmail: z.string().email("E-mail inválido"),
+  currentPassword: z.string().min(1, "Informe a senha atual"),
+});
+
+// Alteração de senha em autoatendimento — o próprio admin logado trocando a
+// PRÓPRIA senha (mesmo padrão de changePasswordSchema em auth.schema.ts e de
+// changePlatformPasswordSchema em platform.schema.ts). Diferente de
+// adminUserSchema acima, que é outro admin com "users.manage" definindo a
+// senha de um terceiro sem precisar da senha atual.
+export const changeAdminPasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Informe a senha atual"),
+    newPassword: z
+      .string()
+      .min(8, "A senha deve ter no mínimo 8 caracteres")
+      .regex(/[a-z]/, "A senha deve conter uma letra minúscula")
+      .regex(/[A-Z]/, "A senha deve conter uma letra maiúscula")
+      .regex(/[0-9]/, "A senha deve conter um número"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
+
 export const stockAdjustSchema = z.object({
   productId: z.string().min(1),
   variantId: z.string().optional().nullable(),

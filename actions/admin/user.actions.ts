@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAdmin, requirePermission } from "@/lib/auth/admin-session";
 import { logAudit } from "@/lib/audit";
-import { hashPassword } from "@/lib/auth/password";
-import { adminUserSchema } from "@/schemas/admin.schema";
+import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { adminUserSchema, changeAdminPasswordSchema, changeAdminEmailSchema } from "@/schemas/admin.schema";
 
 export interface ActionResult {
   success: boolean;
@@ -87,4 +87,58 @@ export async function deleteAdminUserAction(adminUserId: string): Promise<Action
 
 export async function currentAdminContext() {
   return requireAdmin();
+}
+
+// Autoatendimento: QUALQUER admin logado (independente de papel/permissão)
+// pode trocar a PRÓPRIA senha, mediante confirmação da senha atual — por
+// isso usa requireAdmin() (sessão válida) em vez de requirePermission()
+// (que exigiria "users.manage", pensado para um admin alterando o cadastro
+// de outro). Mesmo padrão de changePasswordAction (cliente) e
+// changePlatformPasswordAction (plataforma).
+export async function changeMyPasswordAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  const admin = await requireAdmin();
+
+  const parsed = changeAdminPasswordSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
+  const valid = await verifyPassword(parsed.data.currentPassword, admin.passwordHash);
+  if (!valid) return { success: false, message: "Senha atual incorreta." };
+
+  const passwordHash = await hashPassword(parsed.data.newPassword);
+  await prisma.adminUser.update({ where: { id: admin.id }, data: { passwordHash } });
+  await logAudit({ adminId: admin.id, action: "admin_user.change_own_password", entity: "AdminUser", entityId: admin.id });
+
+  return { success: true, message: "Senha alterada com sucesso." };
+}
+
+// Autoatendimento: troca do PRÓPRIO e-mail, mediante confirmação da senha
+// atual. `AdminUser.email` é único só dentro da empresa
+// (`@@unique([companyId, email])`), então a checagem de duplicidade usa
+// findFirst (não findUnique) — a extensão de tenant já injeta companyId no
+// where automaticamente.
+export async function changeMyEmailAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  const admin = await requireAdmin();
+
+  const parsed = changeAdminEmailSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
+  const valid = await verifyPassword(parsed.data.currentPassword, admin.passwordHash);
+  if (!valid) return { success: false, message: "Senha atual incorreta." };
+
+  const newEmail = parsed.data.newEmail.toLowerCase();
+  if (newEmail === admin.email.toLowerCase()) {
+    return { success: false, message: "Este já é o seu e-mail atual." };
+  }
+
+  const existing = await prisma.adminUser.findFirst({ where: { email: newEmail } });
+  if (existing) return { success: false, message: "Já existe um usuário com esse e-mail." };
+
+  await prisma.adminUser.update({ where: { id: admin.id }, data: { email: newEmail } });
+  await logAudit({ adminId: admin.id, action: "admin_user.change_own_email", entity: "AdminUser", entityId: admin.id, metadata: { newEmail } });
+
+  return { success: true, message: "E-mail alterado com sucesso." };
 }

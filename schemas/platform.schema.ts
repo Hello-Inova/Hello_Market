@@ -73,6 +73,17 @@ export const updateCompanyThemeSchema = updateCompanySchema.pick({
 
 export type UpdateCompanyThemeInput = z.infer<typeof updateCompanyThemeSchema>;
 
+// Troca de e-mail do PlatformAdmin — mesmo padrão de changeEmailSchema em
+// schemas/auth.schema.ts. `PlatformAdmin.email` é @unique globalmente (não
+// tem escopo de tenant), então a checagem de duplicidade pode usar
+// findUnique normalmente.
+export const changePlatformEmailSchema = z.object({
+  newEmail: z.string().email("E-mail inválido"),
+  currentPassword: z.string().min(1, "Informe a senha atual"),
+});
+
+export type ChangePlatformEmailInput = z.infer<typeof changePlatformEmailSchema>;
+
 // Troca de senha do PlatformAdmin — mesmo formato de schemas/auth.schema.ts
 // (changePasswordSchema), usado pelo cliente final na loja.
 export const changePlatformPasswordSchema = z

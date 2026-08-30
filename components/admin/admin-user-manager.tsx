@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -91,7 +92,7 @@ export function AdminUserManager({ users, currentAdminId }: { users: AdminUserRo
             <div className="space-y-1.5"><Label>E-mail</Label><Input name="email" type="email" defaultValue={editing?.email} required /></div>
             <div className="space-y-1.5">
               <Label>{editing ? "Nova senha (deixe em branco para manter)" : "Senha"}</Label>
-              <Input name="password" type="password" required={!editing} />
+              <PasswordInput name="password" required={!editing} />
             </div>
             <div className="space-y-1.5">
               <Label>Papel</Label>

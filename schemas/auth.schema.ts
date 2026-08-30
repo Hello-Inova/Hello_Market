@@ -82,6 +82,11 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
+export const changeEmailSchema = z.object({
+  newEmail: z.string().email("E-mail inválido"),
+  currentPassword: z.string().min(1, "Informe a senha atual"),
+});
+
 export const updateProfileSchema = z.object({
   firstName: z.string().min(2).max(80),
   lastName: z.string().min(2).max(80),

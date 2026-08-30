@@ -4,11 +4,12 @@ import { useActionState, useTransition } from "react";
 import { toast } from "sonner";
 import { Laptop, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { changePasswordAction, type ActionResult } from "@/actions/auth.actions";
 import { terminateSessionAction, terminateAllOtherSessionsAction } from "@/actions/session.actions";
 import { formatDateTime } from "@/lib/utils";
+import { ChangeEmailForm } from "@/components/account/change-email-form";
 
 interface SessionData {
   id: string;
@@ -20,12 +21,17 @@ interface SessionData {
 
 const initialState: ActionResult = { success: false };
 
-export function SecurityPanel({ sessions }: { sessions: SessionData[] }) {
+export function SecurityPanel({ sessions, email }: { sessions: SessionData[]; email: string }) {
   const [state, formAction, isPending] = useActionState(changePasswordAction, initialState);
   const [isTransitioning, startTransition] = useTransition();
 
   return (
     <div className="space-y-8">
+      <div>
+        <h2 className="mb-3 font-semibold">Alterar e-mail</h2>
+        <ChangeEmailForm currentEmail={email} />
+      </div>
+
       <div>
         <h2 className="mb-3 font-semibold">Alterar senha</h2>
         <form
@@ -36,15 +42,15 @@ export function SecurityPanel({ sessions }: { sessions: SessionData[] }) {
         >
           <div className="space-y-1.5">
             <Label>Senha atual</Label>
-            <Input name="currentPassword" type="password" required />
+            <PasswordInput name="currentPassword" required />
           </div>
           <div className="space-y-1.5">
             <Label>Nova senha</Label>
-            <Input name="newPassword" type="password" required />
+            <PasswordInput name="newPassword" required />
           </div>
           <div className="space-y-1.5">
             <Label>Confirmar nova senha</Label>
-            <Input name="confirmPassword" type="password" required />
+            <PasswordInput name="confirmPassword" required />
           </div>
           <Button type="submit" disabled={isPending}>
             {isPending ? "Salvando..." : "Alterar senha"}

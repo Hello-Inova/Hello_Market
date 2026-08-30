@@ -20,6 +20,7 @@ import {
   Menu,
   FolderTree,
   BadgeCheck,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { adminLogoutAction } from "@/actions/admin-auth.actions";
@@ -39,6 +40,7 @@ const NAV = [
   { href: "/usuarios", label: "Usuários e permissões", icon: ShieldCheck },
   { href: "/auditoria", label: "Auditoria", icon: ScrollText },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
+  { href: "/perfil", label: "Perfil", icon: User },
 ];
 
 export function AdminShell({
@@ -81,10 +83,14 @@ export function AdminShell({
         })}
       </nav>
       <div className="border-t border-zinc-800 p-3">
-        <div className="mb-2 px-1">
+        <Link
+          href={`${base}/perfil`}
+          onClick={() => setMobileOpen(false)}
+          className="mb-2 block rounded-lg px-1 py-1 hover:bg-zinc-800"
+        >
           <p className="truncate text-sm font-medium text-white">{admin.name}</p>
           <p className="truncate text-xs text-zinc-500">{admin.role}</p>
-        </div>
+        </Link>
         <form action={adminLogoutAction.bind(null, companySlug)}>
           <button
             type="submit"

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createCompanyAction, type ActionResult } from "@/actions/platform/companies.actions";
@@ -99,7 +100,7 @@ export function CompanyCreateForm({ plans }: { plans: PlanOption[] }) {
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label>Senha provisória</Label>
-            <Input name="adminPassword" type="password" required aria-invalid={!!err.adminPassword} />
+            <PasswordInput name="adminPassword" required aria-invalid={!!err.adminPassword} />
             {err.adminPassword && <p className="text-xs text-destructive">{err.adminPassword}</p>}
           </div>
         </CardContent>

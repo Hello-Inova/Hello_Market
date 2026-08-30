@@ -8,7 +8,7 @@ import {
   destroyPlatformSession,
   requirePlatformAdmin,
 } from "@/lib/auth/platform-session";
-import { changePlatformPasswordSchema } from "@/schemas/platform.schema";
+import { changePlatformPasswordSchema, changePlatformEmailSchema } from "@/schemas/platform.schema";
 
 // Nota: lib/audit.ts (logAudit) grava em AuditLog, que é um modelo com
 // escopo de empresa (companyId obrigatório) — pensado para ações dentro de
@@ -69,4 +69,31 @@ export async function changePlatformPasswordAction(
   await prisma.platformAdmin.update({ where: { id: admin.id }, data: { passwordHash } });
 
   return { success: true, message: "Senha alterada com sucesso." };
+}
+
+export async function changePlatformEmailAction(
+  _prev: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const admin = await requirePlatformAdmin();
+
+  const parsed = changePlatformEmailSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
+  const valid = await verifyPassword(parsed.data.currentPassword, admin.passwordHash);
+  if (!valid) return { success: false, message: "Senha atual incorreta." };
+
+  const newEmail = parsed.data.newEmail.toLowerCase();
+  if (newEmail === admin.email.toLowerCase()) {
+    return { success: false, message: "Este já é o seu e-mail atual." };
+  }
+
+  const existing = await prisma.platformAdmin.findUnique({ where: { email: newEmail } });
+  if (existing) return { success: false, message: "Já existe um usuário com esse e-mail." };
+
+  await prisma.platformAdmin.update({ where: { id: admin.id }, data: { email: newEmail } });
+
+  return { success: true, message: "E-mail alterado com sucesso." };
 }
