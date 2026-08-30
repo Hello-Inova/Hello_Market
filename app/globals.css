@@ -24,6 +24,13 @@
   --success: #16a34a;
   --warning: #d97706;
   --radius: 0.75rem;
+
+  /* Fase 4 — tema por empresa: indireção para a fonte "ativa" do request.
+     app/loja/[companySlug]/layout.tsx sobrescreve só esta variável (com um
+     <style> por request, depois deste bloco na cascata, então vence por
+     ordem de aparição com a mesma especificidade de :root) para trocar a
+     fonte da loja sem precisar tocar em @theme nem recompilar utilitários. */
+  --font-sans-active: var(--font-geist-sans);
 }
 
 @theme inline {
@@ -49,7 +56,7 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 0.25rem);
   --radius-sm: calc(var(--radius) - 0.375rem);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans-active);
   --font-mono: var(--font-geist-mono);
 }
 

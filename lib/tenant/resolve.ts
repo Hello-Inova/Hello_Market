@@ -10,6 +10,23 @@ import type { TenantContext } from "./context";
  */
 export const DEFAULT_COMPANY_SLUG = "hello-market";
 
+/**
+ * Slugs que uma nova empresa nunca pode usar (Fase 3/5): os segmentos de
+ * rota antigos pré-Fase 2 (`proxy.ts` os trata como URL legada, não como
+ * slug de empresa), os nomes de rota reservados do painel admin, e os
+ * prefixos de topo do próprio app (`admin`, `loja`, `plataforma`, `api`).
+ * Mantido separado das constantes internas de `proxy.ts` (que já cobrem o
+ * mesmo conjunto para o redirect de compatibilidade) para não depender de
+ * um middleware a partir de uma Server Action.
+ */
+export const RESERVED_COMPANY_SLUGS = new Set([
+  "produtos", "produto", "busca", "carrinho", "paginas", "minha-conta",
+  "checkout", "entrar", "cadastro", "esqueci-senha", "redefinir-senha",
+  "categorias", "marcas", "pedidos", "clientes", "estoque", "cupons",
+  "avaliacoes", "banners", "usuarios", "auditoria", "configuracoes", "login",
+  "plataforma", "admin", "loja", "api", "novo", "nova",
+]);
+
 let cachedDefaultTenant: TenantContext | null = null;
 let cachedDefaultTenantPromise: Promise<TenantContext> | null = null;
 

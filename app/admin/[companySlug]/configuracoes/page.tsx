@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { requirePermission } from "@/lib/auth/admin-session";
 import { getStoreSettings } from "@/services/settings.service";
+import { prisma } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SettingsForm } from "@/components/admin/settings-form";
+import { AppearanceForm } from "@/components/admin/appearance-form";
 
 export const metadata: Metadata = { title: "Configurações" };
 
@@ -21,8 +23,11 @@ function IntegrationRow({ label, active, detail }: { label: string; active: bool
 }
 
 export default async function AdminSettingsPage() {
-  await requirePermission("settings.manage");
-  const settings = await getStoreSettings();
+  const admin = await requirePermission("settings.manage");
+  const [settings, company] = await Promise.all([
+    getStoreSettings(),
+    prisma.company.findUniqueOrThrow({ where: { id: admin.companyId } }),
+  ]);
 
   const paymentProvider = (process.env.PAYMENT_PROVIDER || "mock").toLowerCase();
   const emailProvider = (process.env.EMAIL_PROVIDER || "console").toLowerCase();
@@ -46,6 +51,17 @@ export default async function AdminSettingsPage() {
           </p>
         </CardContent>
       </Card>
+
+      <AppearanceForm
+        defaults={{
+          primaryColor: company.primaryColor,
+          secondaryColor: company.secondaryColor,
+          fontColor: company.fontColor,
+          fontFamily: company.fontFamily,
+          logoUrl: company.logoUrl,
+          faviconUrl: company.faviconUrl,
+        }}
+      />
 
       <SettingsForm settings={settings} />
     </div>

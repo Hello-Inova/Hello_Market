@@ -129,6 +129,21 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // Fase 3 — Plataforma Hello Inova: cookie próprio (hm_platform_session),
+  // sem slug de empresa (o Super Admin não pertence a nenhum tenant).
+  if (segments[0] === "plataforma") {
+    const isLoginRoute = segments[1] === "login";
+    if (!isLoginRoute) {
+      const hasPlatformSession = request.cookies.has("hm_platform_session");
+      if (!hasPlatformSession) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/plataforma/login";
+        url.searchParams.set("next", pathname);
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -136,6 +151,7 @@ export const config = {
   matcher: [
     "/",
     "/admin/:path*",
+    "/plataforma/:path*",
     "/loja/:path*",
     "/produtos/:path*",
     "/produto/:path*",
