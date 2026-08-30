@@ -102,7 +102,14 @@ export function AccountNav({ base, userName, userEmail }: AccountNavProps) {
 
   return (
     <>
-      <aside className="hidden md:block">
+      {/* md:self-start impede o <aside> de esticar até a altura do
+          conteúdo da direita (comportamento padrão de grid/flex stretch)
+          — sem isso ele fica do tamanho da página inteira e o sticky não
+          tem espaço de rolagem próprio para "flutuar". Com self-start ele
+          fica só do tamanho do próprio conteúdo e md:sticky o mantém
+          visível enquanto a coluna da direita (pedidos, endereços etc.)
+          rola por baixo. */}
+      <aside className="hidden md:sticky md:top-6 md:block md:self-start">
         <div className="mb-4 rounded-xl border p-4">
           <p className="font-medium">{userName}</p>
           <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
