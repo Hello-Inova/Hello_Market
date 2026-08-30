@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { saveProductAction } from "@/actions/admin/product.actions";
+import { ImageUploadButton } from "@/components/admin/image-upload-button";
 
 interface ImageRow {
   id?: string;
@@ -94,6 +95,9 @@ export function ProductForm({ product, categories, brands }: Props) {
 
   function addImage() {
     setImages((prev) => [...prev, { url: "", altText: "" }]);
+  }
+  function addImageWithUrl(url: string) {
+    setImages((prev) => [...prev, { url, altText: "" }]);
   }
   function updateImage(idx: number, field: keyof ImageRow, value: string) {
     setImages((prev) => prev.map((img, i) => (i === idx ? { ...img, [field]: value } : img)));
@@ -298,7 +302,10 @@ export function ProductForm({ product, categories, brands }: Props) {
                   <button onClick={() => removeImage(idx)}><Trash2 className="h-4 w-4 text-destructive" /></button>
                 </div>
               ))}
-              <Button variant="outline" onClick={addImage}><Plus className="h-4 w-4" /> Adicionar imagem (URL)</Button>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={addImage}><Plus className="h-4 w-4" /> Adicionar imagem (URL)</Button>
+                <ImageUploadButton onUploaded={addImageWithUrl} />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -317,8 +324,9 @@ export function ProductForm({ product, categories, brands }: Props) {
                   <Input placeholder="Opções: Cor:Azul, Tamanho:M" value={v.optionsText} onChange={(e) => updateVariant(idx, "optionsText", e.target.value)} className="sm:col-span-2" />
                   <Input placeholder="Preço (opcional)" type="number" value={v.price} onChange={(e) => updateVariant(idx, "price", e.target.value)} />
                   <Input placeholder="Estoque" type="number" value={v.stock} onChange={(e) => updateVariant(idx, "stock", e.target.value)} />
-                  <div className="flex items-center gap-2 sm:col-span-6">
-                    <Input placeholder="URL da imagem da variação (opcional)" value={v.imageUrl} onChange={(e) => updateVariant(idx, "imageUrl", e.target.value)} className="flex-1" />
+                  <div className="flex flex-wrap items-center gap-2 sm:col-span-6">
+                    <Input placeholder="URL da imagem da variação (opcional)" value={v.imageUrl} onChange={(e) => updateVariant(idx, "imageUrl", e.target.value)} className="min-w-0 flex-1" />
+                    <ImageUploadButton onUploaded={(url) => updateVariant(idx, "imageUrl", url)} label="Enviar" />
                     <button onClick={() => removeVariant(idx)}><Trash2 className="h-4 w-4 text-destructive" /></button>
                   </div>
                 </div>
