@@ -145,9 +145,6 @@ export function OrderDetail({ order }: Props) {
                   {idx <= currentStepIndex ? <Check className="h-4 w-4" /> : idx + 1}
                 </div>
                 <span className="mt-1 hidden text-[11px] sm:block">{ORDER_STATUS_LABEL[step]}</span>
-                {idx < ORDER_TIMELINE_STEPS.length - 1 && (
-                  <div className={cn("absolute mt-4 h-0.5 w-full", idx < currentStepIndex ? "bg-primary" : "bg-secondary")} />
-                )}
               </div>
             ))}
           </div>
