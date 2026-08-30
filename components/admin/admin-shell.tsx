@@ -105,7 +105,13 @@ export function AdminShell({
 
   return (
     <div className="flex min-h-screen bg-secondary/30">
-      <aside className="hidden w-64 shrink-0 flex-col bg-zinc-950 md:flex">{SidebarContent}</aside>
+      {/* md:self-start impede o <aside> de esticar até a altura do
+          conteúdo (comportamento padrão de flex stretch) — sem isso ele
+          fica com a mesma altura da página inteira e o sticky não tem
+          efeito algum, porque não sobra espaço de rolagem dentro dele
+          próprio. Com self-start + h-screen, o menu fica travado no
+          topo da tela enquanto o conteúdo da direita rola por baixo. */}
+      <aside className="hidden w-64 shrink-0 flex-col bg-zinc-950 md:sticky md:top-0 md:flex md:h-screen md:self-start">{SidebarContent}</aside>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
